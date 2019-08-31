@@ -10,7 +10,6 @@ int distanciaAgora;
 unsigned long tempoMedida;
 
 NewPing sonar(SENSOR_DIST_TRIG, SENSOR_DIST_ECHO, DIST_OBSTACULO);
-  
 
 void setup() {
 
@@ -21,7 +20,6 @@ void setup() {
 }
 
 void loop() {
-  
   
   if(millis() >= TEMPO_LEITURA + tempoMedida){
       distanciaAgora = sonar.ping_cm();
