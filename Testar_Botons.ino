@@ -7,6 +7,7 @@ void setup() {
   pinMode(LED_PIN, OUTPUT);
   pinMode(BUT_ACEL_PIN, INPUT);
    pinMode(BUT_DESAC_PIN, INPUT);
+   Serial.begin(9600);
 }
 
 void loop() {
@@ -16,17 +17,20 @@ void loop() {
   
   if(!butonAcel){
     digitalWrite(LED_PIN, HIGH);
+    Serial.println(butonAcel);
     }
     if(butonAcel){
-      
+    Serial.println(butonAcel);  
     digitalWrite(LED_PIN, LOW);
     }
     
-  if(!butonDesac){
+ /* if(!butonDesac){
     digitalWrite(LED_PIN, HIGH);
+    Serial.println(butonDesac);
     }
   if(butonDesac){
     digitalWrite(LED_PIN, LOW);
-    }
+    Serial.println(butonDesac);
+    }*/
   
 }
