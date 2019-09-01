@@ -45,6 +45,7 @@ Serial.println(estadoBotaoDesLiga);
   if(estadoBotaoDesLiga != estadoBotaoAnt){
     start = LOW;
     digitalWrite(LED2_PIN, LOW);
+    digitalWrite(LED_PIN, LOW);
     //Serial.println(start); 
     }
   if(start){
