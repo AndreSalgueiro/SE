@@ -8,6 +8,7 @@
 #define PIEZO_PIN 5
 #define BUT_LIGA_PIN 2
 #define BUT_DESLIGA_PIN 4
+#define LDR_PIN A5
 
 int i =0;
 int distanciaAgora;
@@ -17,6 +18,7 @@ int estadoBotaoDesLiga;
 int estadoBotaoAnt = 1;
 int start = 0;
 int estado = 1;
+int luminosidade;
 const int delayBip = 1;
 unsigned long tempoMedida;
 
@@ -37,7 +39,7 @@ void estado_2(){
  }
 
 void estado_3(unsigned distanciaAgora){
- estado = 3; 
+ estado = 3;
  for (i=0;i<256;i++){
   digitalWrite(LED_PIN, HIGH);
   analogWrite(PIEZO_PIN,i);
@@ -60,7 +62,9 @@ void setup() {
   pinMode(PIEZO_PIN,OUTPUT);
   pinMode(BUT_LIGA_PIN,INPUT);
   pinMode(BUT_DESLIGA_PIN,INPUT);
+  pinMode(LDR_PIN, INPUT);
   Serial.begin(9600); 
+  
 }
 
 void loop() {
@@ -84,9 +88,12 @@ void loop() {
         break;
         }
         if(start){
-          if(millis() >= TEMPO_LEITURA + tempoMedida){
+          luminosidade = analogRead(LDR_PIN);
+          Serial.print("Luminosidade = ");
+          Serial.println(luminosidade);
+          if((millis() >= TEMPO_LEITURA + tempoMedida)){
               distanciaAgora = sonar.ping_cm();
-              if(distanciaAgora != 0 && distanciaAgora <= DIST_OBSTACULO){
+              if(distanciaAgora != 0 && distanciaAgora <= DIST_OBSTACULO && luminosidade > 600){
                  if(estadoBotaoDesLiga != estadoBotaoAnt){
                     estado_1();
                     break;
