@@ -67,6 +67,7 @@ void loop() {
 
   int estadoBotaoAcel = digitalRead(BUT_ACEL_PIN);
   int estadoBotaoDesac = digitalRead(BUT_DESAC_PIN);
+  Serial.println(estadoBotaoAcel);
   piscaLed(velocPisca);
   
 

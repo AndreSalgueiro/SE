@@ -25,7 +25,7 @@ unsigned long controleTempBotao;
 //////////////////
 
 void estado_1(){
-  Serial.println("Entrei metodo estado 1");
+ // Serial.println("Entrei metodo estado 1");
   controlePiscaLed();
   estado = 1;
   
@@ -50,21 +50,28 @@ void estado_4(){
     
 }
 void controlePiscaLed(){
-   Serial.println("Entrei no controle de pisca LED");
+  // Serial.println("Entrei no controle de pisca LED");
+  // Serial.println("millis = ");
+  // Serial.println(millis());
+   //Serial.println("controleTempoPiscaLed = ");
+   //Serial.println(controleTempoPiscaLed);
+  // Serial.print("velocPisca = ");
+ //  Serial.println(velocPisca);
+   
   if(millis() - controleTempoPiscaLed >= velocPisca){
-    Serial.println("Entrei controleTempoPiscaLed");
+    //Serial.println("Entrei controleTempoPiscaLed");
     if(estadoLed == HIGH){
-      Serial.println("Entrei no if = HIGH LED");
+    //  Serial.println("Entrei no if = HIGH LED");
       estadoLed = LOW;
       digitalWrite(LED_PIN, estadoLed);
-      Serial.println("Entrei no if - HIGH LED");
+    //  Serial.println("Entrei no if - HIGH LED");
    }else if(estadoLed == LOW){
      estadoLed = HIGH;
       digitalWrite(LED_PIN, estadoLed);
    }
    
-  }
   controleTempoPiscaLed = millis();
+  }
   
 }
 void setup() {
@@ -72,7 +79,7 @@ void setup() {
   pinMode(LED_PIN, OUTPUT);
   pinMode(BUT_ACEL_PIN, INPUT);
   pinMode(BUT_DESAC_PIN, INPUT);
-
+  digitalWrite(LED_PIN, estadoLed);
   //#if habilitaDebugSerial == true
   Serial.begin(9600);
  // #endif
@@ -87,41 +94,49 @@ void loop() {
   switch(estado){
     case 1:{
       Serial.println("Estou no estado 1");
-      estadoBotaoAcelAnt = digitalRead(BUT_ACEL_PIN);
-      estadoBotaoDesacAnt = digitalRead(BUT_DESAC_PIN);
+      estadoBotaoAcel = digitalRead(BUT_ACEL_PIN);
+      estadoBotaoDesac = digitalRead(BUT_DESAC_PIN);
+      Serial.println("Botao Acelera estado 1");
+      Serial.println(digitalRead(BUT_ACEL_PIN));
+      Serial.println("Botao desacelera estado 1");
+      Serial.println(digitalRead(BUT_DESAC_PIN));
         
       if(!estadoBotaoAcel == HIGH && (estadoBotaoAcel != estadoBotaoAcelAnt)){
+        Serial.println("Apertei botao acelera LED");
+          estadoBotaoAcelAnt = estadoBotaoAcel;
           estado_2();
           break;
       }
-      if(!estadoBotaoDesac == HIGH && (estadoBotaoDesacAnt != estadoBotaoDesacAnt)){
+      if(!estadoBotaoDesac == HIGH && (estadoBotaoDesac != estadoBotaoDesacAnt)){
+          Serial.println("Apertei botao desacelera LED");
+          estadoBotaoDesacAnt = estadoBotaoDesac;
           estado_3();
           break;
       }
-      estadoBotaoAcelAnt = estadoBotaoAcel;
-      estadoBotaoDesacAnt = estadoBotaoDesacAnt;
       estado_1();
       break;
     }
     case 2:{
-      estadoBotaoAcelAnt = digitalRead(BUT_ACEL_PIN);
-      estadoBotaoDesacAnt = digitalRead(BUT_DESAC_PIN);
+      Serial.println("Estou no estado 2");
+      estadoBotaoAcel = digitalRead(BUT_ACEL_PIN);
+      estadoBotaoDesac = digitalRead(BUT_DESAC_PIN);
       
       //se eu larguei o botao de acelerar aumenta a velocidade que o led pisca
       if(!estadoBotaoAcel == LOW && (estadoBotaoAcel != estadoBotaoAcelAnt)){
-        velocPisca -= aux;
+        Serial.println("Entrei no metodo aumenta velocidade pisca");
+        velocPisca = velocPisca - aux;
+        estadoBotaoAcelAnt = estadoBotaoAcel;
         estado_1();
         break;
         
       }
       //Se estou no estado 2 e cliquei no outro botao vai para o estado final
       if(!estadoBotaoDesac == HIGH && (estadoBotaoDesacAnt != estadoBotaoDesacAnt)){
+        estadoBotaoDesacAnt = estadoBotaoDesac;
         estado_4();
         break;
         
       }
-      estadoBotaoAcelAnt = estadoBotaoAcel;
-      estadoBotaoDesacAnt = estadoBotaoDesacAnt;
       
       //se passou os 500ms deste quando cliquei no botão retorna para estado 1
       if(millis() - controleTempBotao <= tempoEspera){
@@ -134,24 +149,25 @@ void loop() {
       
     }
     case 3:{
-      estadoBotaoAcelAnt = digitalRead(BUT_ACEL_PIN);
-      estadoBotaoDesacAnt = digitalRead(BUT_DESAC_PIN);
+      Serial.println("Estou no estado 3");
+      estadoBotaoAcel = digitalRead(BUT_ACEL_PIN);
+      estadoBotaoDesac = digitalRead(BUT_DESAC_PIN);
     
       //se eu larguei o botao de desacelerar diminui a velocidade que o led pisca
       if(!estadoBotaoDesac == LOW && (estadoBotaoAcel != estadoBotaoDesacAnt)){
-          velocPisca += aux;
+          velocPisca = velocPisca + aux;
+          estadoBotaoAcelAnt = estadoBotaoAcel;
           estado_1();
           break;
           
         }
       //Se estou no estado 2 e cliquei no outro botao vai para o estado final
       if(!estadoBotaoAcel == HIGH && (estadoBotaoAcel != estadoBotaoAcelAnt)){
+        estadoBotaoDesacAnt = estadoBotaoDesac;
         estado_4();
         break;
           
       }
-      estadoBotaoAcelAnt = estadoBotaoAcel;
-      estadoBotaoDesacAnt = estadoBotaoDesacAnt;
       
       //se passou os 500ms retorna para estado 1
       if(millis() - controleTempBotao <= tempoEspera){
