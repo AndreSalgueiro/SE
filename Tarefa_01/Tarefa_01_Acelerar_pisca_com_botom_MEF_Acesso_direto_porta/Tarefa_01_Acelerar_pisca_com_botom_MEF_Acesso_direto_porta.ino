@@ -1,7 +1,7 @@
-#define LED_PIN 13
-#define BUT_ACEL_PIN 2
-#define BUT_DESAC_PIN 4
-#define TEMPO_BOUNCE 200
+//#define LED_PIN 13
+//#define BUT_ACEL_PIN 2
+//#define BUT_DESAC_PIN 4
+//#define TEMPO_BOUNCE 200
 
 //////////////////
 //GLOBAIS
