@@ -29,13 +29,11 @@ void estado_1(){
   
 }
 void estado_2(){
-  controleTempBotao = millis();
   controlePiscaLed();
   estado = 2;
   
 }
 void estado_3(){ 
-  controleTempBotao = millis();
   controlePiscaLed();
   estado = 3;
   
@@ -101,6 +99,7 @@ void loop() {
         Serial.println(estadoBotaoAcel);
         Serial.println("Botao Acelera anterior estado 1");
         Serial.println(estadoBotaoAcelAnt);*/
+		controleTempBotao = millis();
         estado_2();
         break;
       }
@@ -111,6 +110,7 @@ void loop() {
           Serial.println("Botao desacelera anterior estado 1");
           Serial.println(estadoBotaoDesacAnt);
           //estadoBotaoDesacAnt = estadoBotaoDesac;*/
+		  controleTempBotao = millis();
           estado_3();
           break;
       }
