@@ -108,14 +108,13 @@ void loop() {
     }
     case 2:{
       Serial.println("Estou no estado 2");
-      Serial.println("estadoBotaoAcelAux");
-      Serial.println(estadoBotaoAcelAux);
-
+      
       if(estadoBotaoAcelAux == HIGH ){
         Serial.println("Entrei no 1º if aumenta velocidade pisca");
         estadoBotaoAcel = digitalRead(BUT_ACEL_PIN);
         estadoBotaoDesac = digitalRead(BUT_DESAC_PIN);
-      
+        
+         //Se estou no estado 2 e soltei o botão de acelera
          if(!estadoBotaoAcel == LOW){
           Serial.println("Entrei no 2º if aumenta velocidade pisca");
           velocPisca = velocPisca - aux;
@@ -126,7 +125,7 @@ void loop() {
           
          }
          //Se estou no estado 2 e cliquei no outro botao vai para o estado final
-         if(!estadoBotaoDesac == HIGH){
+         if(!estadoBotaoDesac == HIGH && (estadoBotaoDesac != estadoBotaoDesacAnt)){
           estado_4();
           break;
         
@@ -148,14 +147,13 @@ void loop() {
     }
     case 3:{
       Serial.println("Estou no estado 3");
-      Serial.println("estadoBotaoDesacAux");
-      Serial.println(estadoBotaoDesacAux);
       
       if(estadoBotaoDesacAux == HIGH){
          Serial.println("Entrei no 1º if diminui velocidade pisca");
          estadoBotaoAcel = digitalRead(BUT_ACEL_PIN);
          estadoBotaoDesac = digitalRead(BUT_DESAC_PIN);
          
+         //Se estou no estado 2 e soltei o botão de desacelera
          if(!estadoBotaoDesac == LOW){
            Serial.println("Entrei no 2º if diminui velocidade pisca");
            velocPisca = velocPisca + aux;
@@ -166,7 +164,7 @@ void loop() {
            
          }
         //Se estou no estado 2 e cliquei no outro botao vai para o estado final
-        if(!estadoBotaoAcel == HIGH){
+        if(!estadoBotaoAcel == HIGH && (estadoBotaoAcel != estadoBotaoAcelAnt)){
         
           estado_4();
           break;
