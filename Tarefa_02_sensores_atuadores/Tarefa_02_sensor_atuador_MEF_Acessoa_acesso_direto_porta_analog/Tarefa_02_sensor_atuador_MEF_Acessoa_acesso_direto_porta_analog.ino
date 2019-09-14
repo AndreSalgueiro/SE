@@ -8,7 +8,7 @@
 #define PIEZO_PIN 5
 #define BUT_LIGA_PIN 2
 #define BUT_DESLIGA_PIN 4
-#define LDR_PIN A0
+//#define LDR_PIN A0
 
 int i =0;
 int distanciaAgora;
@@ -40,9 +40,12 @@ void estado_2(){
 
 void estado_3(unsigned distanciaAgora){
  estado = 3;
- for (i=0;i<256;i++){
+ for (i=0;i<50;i++){
   digitalWrite(LED_PIN, HIGH);
-  analogWrite(PIEZO_PIN,i);
+
+  digitalWrite(PIEZO_PIN, LOW);
+  delay(delayBip);
+  digitalWrite(PIEZO_PIN, HIGH);
   delay(delayBip);
   
   if(distanciaAgora != distanciaAnt){
@@ -62,7 +65,10 @@ void setup() {
   pinMode(PIEZO_PIN,OUTPUT);
   pinMode(BUT_LIGA_PIN,INPUT);
   pinMode(BUT_DESLIGA_PIN,INPUT);
-  pinMode(LDR_PIN, INPUT);
+  //pinMode(LDR_PIN, INPUT);
+  ADMUX   = 0;             // usa a porta analogica 0
+  ADMUX  |= (1 << REFS0);  // usa a entrada de 5v Vcc como referencia
+  ADCSRA |= (1 << ADEN);   // habilita o conversor analogico digital ADC
   Serial.begin(9600); 
   
 }
@@ -88,7 +94,13 @@ void loop() {
         break;
         }
         if(start){
-          luminosidade = analogRead(LDR_PIN);
+          //luminosidade = analogRead(LDR_PIN);
+          ADCSRA |= (1 << ADSC);        // inicia a conversao
+          while(ADCSRA & (1 << ADSC));  // espera a conversao
+          //O resultado gera 10 bits então usa-se 2 registradores
+          luminosidade = ADCL;                 // 8 bits
+          luminosidade = (ADCH << 8) + luminosidade;          // mais 2 bits
+
           Serial.print("Luminosidade = ");
           Serial.println(luminosidade);
           if((millis() >= TEMPO_LEITURA + tempoMedida)){
