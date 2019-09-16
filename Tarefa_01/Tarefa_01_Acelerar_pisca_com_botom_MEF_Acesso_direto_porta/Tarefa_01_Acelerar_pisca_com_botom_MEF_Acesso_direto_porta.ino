@@ -93,8 +93,8 @@ void loop() {
     case 1:{
       Serial.println("Estou no estado 1");
       
-      estadoBotaoAcel = PIND & (1 << 2);//digitalRead(BUT_ACEL_PIN);
-      estadoBotaoDesac = PIND & (1 << 4);//digitalRead(BUT_DESAC_PIN);
+      estadoBotaoAcel = PIND & (1 << 2);//digitalRead(BUT_ACEL_PIN) porta 2
+      estadoBotaoDesac = PIND & (1 << 4);//digitalRead(BUT_DESAC_PIN) porta 4
       //Serial.println("Botao Acelera estado 1");
        
       if(!estadoBotaoAcel == HIGH && (estadoBotaoAcel != estadoBotaoAcelAnt)){
