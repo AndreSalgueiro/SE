@@ -29,14 +29,14 @@ void estado_1(){
   start = LOW;
   digitalWrite(LED2_PIN, LOW);
   digitalWrite(LED_PIN, LOW);
-  }
+ }
 
 void estado_2(){
   estado = 2;
   start = HIGH;
   digitalWrite(LED2_PIN, HIGH);
   digitalWrite(LED_PIN, LOW);
- }
+}
 
 void estado_3(unsigned distanciaAgora){
  estado = 3;
