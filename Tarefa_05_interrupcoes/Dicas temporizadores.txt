@@ -1,0 +1,18 @@
+Timer1 -16 bits - 65535
+
+processador 16MHz - 1//16000000 segundos = 0,0000000625
+
+O contador Timer1 leva 65535 * 0,0000000625 = 0,0040959375 segundos * 1000 = 4,0959375 milesegundos - tempo total até zerar o contador
+
+Selecionando o prescaler a frequencia do clock passa a ser
+
+16000000(16MHz) / 256(prescaler) = 62.500 Hz
+
+O tempo para cada clock é 1/62.500 = 0,000016 segundos = 0,016 milisegundos
+
+Para 500 milisegundos 500ms / 0,016 ms = 31250(vai ter que passar 31250 vezes até chegar no tempo de 500ms)
+
+O contador Timer1 conta de 0 á 65535
+
+logo ele vai contar até 31250 que corresponte a 500 ms
+
