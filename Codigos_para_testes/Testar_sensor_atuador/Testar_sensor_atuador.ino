@@ -1,6 +1,6 @@
 #include <NewPing.h>
 
-#define LED_PIN 13
+#define LED_PIN 5
 #define SENSOR_DIST_TRIG 7
 #define SENSOR_DIST_ECHO 6
 #define DIST_OBSTACULO 15
