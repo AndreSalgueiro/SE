@@ -141,7 +141,6 @@ ISR(TIMER1_COMPA_vect){          // rotina de interrupção Compara o timer
 
 }
 
-
 void loop() {
   estadoBotaoLiga = digitalRead(BUT_LIGA_PIN);
   estadoBotaoDesLiga = digitalRead(BUT_DESLIGA_PIN);
