@@ -2,8 +2,13 @@
 
 # Sensor de Nível de Caixa D'água com Arduino
 
-O projeto tem como objetivo desenvolver um sistema que forneça informações referente ao nível de água contido num reservatório via comunicação wireless.
+O projeto tem como objetivo desenvolver um sistema que forneça informações referente ao nível de água contido num reservatório via comunicação de rádio frequência.
 
 Componentes:
-- Placa Arduino Uno
+- Placas Arduino Uno 
 - Sensor Ultrassônico HC-SR04
+- Emissore e Receptore de Radio Frequência 2,4ghz Nrf24l01
+- Protoboards
+- Led
+- Registor
+- Jump Macho/Fêmea
