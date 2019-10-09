@@ -1,3 +1,4 @@
+#include <U8glib.h>
 #include <NewPing.h>
 #define LED_PIN 5
 //#define LED2_PIN 10
@@ -20,6 +21,10 @@ unsigned long tempoCorrido = 0;
 int estadoAnterior = 1000;
 
 NewPing sonar(SENSOR_DIST_TRIG, SENSOR_DIST_ECHO);
+U8GLIB_ST7920_128X64_1X u8g( 10,  //E
+                             9,  //R/W
+                             8,  //RS
+                             11); //RST
 
 void imprimeEstadoAtual(int estadoAtual){
 
