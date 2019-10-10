@@ -12,3 +12,5 @@ Componentes:
 - Led
 - Registor
 - Jump Macho/Fêmea
+
+![LMaqEstadosogo](https://github.com/AndreSalgueiro/SE/blob/master/Projeto%20Final/Maq%20etado%20inicial.jpg)
