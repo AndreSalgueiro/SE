@@ -33,7 +33,6 @@ void imprimeEstadoAtual(int estadoAtual){
         Serial.println(estadoAtual);
         estadoAnterior = estadoAtual;
       }
-    
   }
 
 void estado_0(){
