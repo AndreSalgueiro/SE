@@ -1,6 +1,9 @@
 #include <RF24.h>
+#include <printf.h>
+
 #define RADIO_ID 0
 
+//Configura os pinos de controle
 #if RADIO_ID == 0
   RF24 radio(8,//CE(enable)
            9//CSN (select)
@@ -20,9 +23,10 @@ int dadosRecebidos;
 void setup() {
   
   Serial.begin(9600);
+  printf_begin();
   radio.begin();
   //radio.setPALevel(RF24_PA_LOW);
-
+    
   Serial.print("Entrei na Funcao Radio = ");
   Serial.println(entreiFuncaoRadio);
   
@@ -40,10 +44,19 @@ void setup() {
   #endif
   
   radio.startListening();//habilita a escuta
+  /*Imprime detalhes do sistema necessario incluir a biblioteca <printf.h>
+   * e definir printf.begin() no setup
+   */
+  radio.printDetails();
 }
 
 void loop() {
 
+  if(radio.isChipConnected()){
+    Serial.println("Dispositivo de radio conectado");
+    }else{
+      Serial.println("Dispositivo de radio Desconectado");
+      }
   dadoDeEnvio = 255; 
    delay(3000);
    

@@ -1,26 +1,20 @@
 #include <U8glib.h>
-#include <NewPing.h>
-#define LED_PIN 5
 //#define LED2_PIN 10
-#define SENSOR_DIST_TRIG 7
-#define SENSOR_DIST_ECHO 6
 //#define DIST_OBSTACULO 15
-#define TEMPO_ESPERA_LEITURA 50
 #define BUT_LIGA_PIN 2
 #define BUT_DESLIGA_PIN 4
 
 int i =0;
-int distanciaAgora = 0;
-int distanciaAnt = 0;
+
 int estadoBotaoLiga = 0;
 int estadoBotaoDesLiga = 0;
 int estadoBotaoAnt = 1;
 int start = 0;
 int estado = 0;
-unsigned long tempoCorrido = 0;
+
 int estadoAnterior = 1000;
 
-NewPing sonar(SENSOR_DIST_TRIG, SENSOR_DIST_ECHO);
+
 U8GLIB_ST7920_128X64_1X u8g( 10,  //E
                              9,  //R/W
                              8,  //RS
@@ -57,14 +51,11 @@ void estado_3(unsigned distanciaAgora){
   }
 
 void setup() {
-  pinMode(LED_PIN, OUTPUT);
+ 
   //pinMode(LED2_PIN, OUTPUT);
-  pinMode(SENSOR_DIST_TRIG, INPUT);
-  pinMode(SENSOR_DIST_ECHO , INPUT);
   //pinMode(PIEZO_PIN,OUTPUT);
   pinMode(BUT_LIGA_PIN,INPUT);
   pinMode(BUT_DESLIGA_PIN,INPUT);
-  //pinMode(LDR_PIN, INPUT);
   Serial.begin(9600); 
   
 }
