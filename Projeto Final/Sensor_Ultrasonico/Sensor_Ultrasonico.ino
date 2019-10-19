@@ -1,15 +1,16 @@
 #include <NewPing.h>
 #include <RF24.h>
-#include <printf.h>
+//#include <printf.h>
 
 #define BOMBA_PIN 5
 #define SENSOR_DIST_TRIG 7
 #define SENSOR_DIST_ECHO 6
-#define TEMPO_ESPERA_LEITURA 100
+#define TEMPO_ESPERA_LEITURA 50
 
 int nivelAguaAnterior = 0;
 int dadosRecebidos = 0;
 int nivelVazio = 15;
+int nivelCheio = 5;
 int nivelAguaAgora = 0;
 
 unsigned long tempoCorrido = 0;
@@ -41,7 +42,7 @@ void setup() {
   digitalWrite(BOMBA_PIN, LOW);//bomba desligada
   
   Serial.begin(9600); 
-  printf_begin();
+  //printf_begin();
   radio.begin();
   
   //Abrindo um canal de comunicacao
@@ -53,16 +54,21 @@ void setup() {
    /*Imprime detalhes do sistema necessario incluir a biblioteca <printf.h>
    * e definir printf.begin() no setup
    */
-   radio.printDetails();
+  // radio.printDetails();
 }
 
 void loop() {
-  
+  //Serial.print("Tempo espera = ");
+  //Serial.println(TEMPO_ESPERA_LEITURA);
+  //Serial.print("Tempo corrido = ");
+  //Serial.println(tempoCorrido);
+  //Serial.print("Tempo millis = ");
+  //Serial.println(millis());
   if((millis() >= TEMPO_ESPERA_LEITURA + tempoCorrido)){
       
     //Verifica se o transmissor de radio esta funcionando
     if(radio.isChipConnected()){
-      Serial.println("Dispositivo de radio ok");
+      Serial.println("Dispositivo de radio operante");
       dadosEnvioRF.dispositivoOperanteRF = true;
     }else{
       Serial.println("Dispositivo de radio inoperante");
@@ -70,9 +76,9 @@ void loop() {
       }
       
     nivelAguaAgora = sonar.ping_cm();
-      
+    Serial.println(nivelAguaAgora);  
     if(nivelAguaAgora != nivelAguaAnterior){
-      
+      Serial.println("Teste");
       nivelAguaAnterior != nivelAguaAgora; 
 
       //Aciona a bomba caso tenha atingido o nivel vazio
@@ -81,6 +87,10 @@ void loop() {
         dadosEnvioRF.bombaLigada = true;
         digitalWrite(BOMBA_PIN, HIGH);
         }
+        else if(nivelAguaAgora <= nivelCheio){
+          dadosEnvioRF.bombaLigada = false;
+          digitalWrite(BOMBA_PIN, LOW);
+          }
         
       dadosEnvioRF.nivelAgua = nivelAguaAgora;
       
@@ -100,7 +110,6 @@ void loop() {
         Serial.println(dadosRecebidos);
       }
      }
-      
+     tempoCorrido = millis();
     }
-    tempoCorrido = millis();
   }
