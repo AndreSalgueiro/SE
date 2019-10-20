@@ -16,19 +16,21 @@ int estadoBotaoDesligaAnt = 1;
 int start = 0;
 int estado = 0;
 int estadoAnterior = 1000;
+int nivelLiquido = 0;
 
 byte enderecos[][6] = {"1Node","2Node"}; 
 
-struct estruturaRecebidoRF{
+struct estruturaDadosRF{
 
-  boolean bombaLigada = false;
+  boolean bombaLigadaRF = false;
   boolean dispositivoOperanteRF = false;
-  int nivelAgua = 0;
+  int nivelLiquidoRF = 0;
   
   };
 
-typedef struct estruturaRecebidoRF tipoRecebidoRF;
-tipoRecebidoRF dadosRecebidoRF;
+typedef struct estruturaDadosRF tipoDadosRF;
+tipoDadosRF dadosRecebidoRF;
+tipoDadosRF dadosEnvioRF;
 
 U8GLIB_ST7920_128X64_1X u8g( 10,  //E
                              9,  //R/W
@@ -49,14 +51,14 @@ void imprimeEstadoAtual(int estadoAtual){
   }
 
 void estado_0(){
-  digitalWrite(LED_PIN, LOW);
+ // digitalWrite(LED_PIN, LOW);
   start = LOW;
   estado = 0;
   }
 
 void estado_1(){
   start = HIGH;
-  digitalWrite(LED_PIN, HIGH);
+  //digitalWrite(LED_PIN, HIGH);
   estado = 1;
  }
 
@@ -64,7 +66,7 @@ void estado_2(){
   estado = 2;
 }
 
-void estado_3(unsigned distanciaAgora){
+void estado_3(){
   //Faz algo com a distância aqui?
   estado = 3;
   }
@@ -73,8 +75,8 @@ void setup() {
  
   //pinMode(LED2_PIN, OUTPUT);
   //pinMode(PIEZO_PIN,OUTPUT);
-  pinMode(BUT_LIGA_PIN,INPUT);
-  pinMode(BUT_DESLIGA_PIN,INPUT);
+  pinMode(BOTAO_SISTEMA_PIN,INPUT);
+  pinMode(BOTAO_BOMBA_PIN,INPUT);
   
   Serial.begin(9600); 
   //printf_begin();
@@ -113,8 +115,15 @@ void loop() {
       break;
      }
      case 1: {
-      
       imprimeEstadoAtual(estado);
+
+      /*if(radio.isChipConnected()){
+      Serial.println("Dispositivo de radio operante");
+      dadosEnvioRF.dispositivoOperanteRF = true;
+      }else{
+      Serial.println("Dispositivo de radio inoperante");
+      dadosEnvioRF.dispositivoOperanteRF = false;
+      }*/
       
       estadoBotaoSistema = digitalRead(BOTAO_SISTEMA_PIN);
       
@@ -126,10 +135,13 @@ void loop() {
        radio.startListening();
       
       if(radio.available()){ //verifica se estou recebendo alguma informacao
-        radio.read(&dadosRecebidoRF, sizeof(tipoRecebidoRF));//recebendo dado
-        Serial.print("Dados Recebido Medidor Nivel = ");
-        Serial.println(dadosRecebidoRF);
-        
+        radio.read(&dadosRecebidoRF, sizeof(tipoDadosRF));//recebendo dado
+        Serial.print("[SUCESSO]- Dados Recebido Medidor Nivel = ");
+        Serial.print("Estatos bomba - " );
+        Serial.println(dadosRecebidoRF.bombaLigadaRF);
+        Serial.print("Nivel liquido - ");
+        Serial.println(dadosRecebidoRF.nivelLiquidoRF);
+
         estado_2();
         break;
       } 
@@ -138,22 +150,50 @@ void loop() {
       }
       case 2:{
         imprimeEstadoAtual(estado);
-        distanciaAgora = sonar.ping_cm();
-       //chama estado 3 que envia os dados para LCD
-        if(distanciaAgora != distanciaAnt){
-          distanciaAnt != distanciaAgora;     
-           estado_3(distanciaAgora);
-           break;
-        }
-        estado_2();
-        break;      
+        //chama estado 3 que envia os dados para LCD
+         estadoBotaoBomba = digitalRead(BOTAO_BOMBA_PIN);
+         
+        Serial.print("Estado botao bomba - ");
+        Serial.println(estadoBotaoBomba);
+        Serial.print("Estado botao bomba ANTERIOR - ");
+        Serial.println(estadoBotaoBombaAnt);
+        
+        //Monitora botao desligar bomba
+        if(estadoBotaoBomba != estadoBotaoBombaAnt){
+
+          if(dadosRecebidoRF.bombaLigadaRF){
+            dadosEnvioRF.bombaLigadaRF = false;
+          }else{
+            dadosEnvioRF.bombaLigadaRF = true;
+            }
+
+          radio.stopListening();  
+        
+          if(radio.write(&dadosEnvioRF, sizeof(tipoDadosRF))){//enviando a informacao
+            Serial.println("[SUCESSO]-Envio comando desligar/ligar bomba");
+          }else{
+            Serial.println("[ERROR]-Envio comando desligar/ligar bomba");
+          } 
+          
+          radio.startListening();
+        } 
+
+        //Dados Display
+        nivelLiquido = dadosRecebidoRF.nivelLiquidoRF;
+        Serial.println("################");
+        Serial.println("Dados Display");
+        Serial.print("Nivel de liquido no reservatorio - ");
+        Serial.println(nivelLiquido);
+        Serial.print("Estato da bomba - ");
+        Serial.println(dadosRecebidoRF.bombaLigadaRF);
+        Serial.println("################");
+        estado_1();
+        break;
       }
       case 3:{
-          imprimeEstadoAtual(estado);
-          //Trata os dados e envia para o LCD
-          Serial.println("Enviando os dados para LCD");
-          estado_1();
-          break;
+        imprimeEstadoAtual(estado);
+        
+          
        }
   } 
 }

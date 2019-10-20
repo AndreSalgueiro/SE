@@ -5,28 +5,31 @@
 #define BOMBA_PIN 5
 #define SENSOR_DIST_TRIG 7
 #define SENSOR_DIST_ECHO 6
-#define TEMPO_ESPERA_LEITURA 50
+#define TEMPO_ESPERA_LEITURA 200
 
 int nivelAguaAnterior = 0;
 int dadosRecebidos = 0;
 int nivelVazio = 15;
 int nivelCheio = 5;
-int nivelAguaAgora = 0;
+int nivelLiquidoAgora = 0;
+boolean estatosRecebidoBombaRF = false;
 
 unsigned long tempoCorrido = 0;
 
 byte enderecos[][6] = {"1Node","2Node"};
 
-struct estruturaEnvioRF{
+struct estruturaDadosRF{
 
-  boolean bombaLigada = false;
+  boolean bombaLigadaRF = false;
   boolean dispositivoOperanteRF = false;
-  int nivelAgua = 0;
+  int nivelLiquidoRF = 0;
   
   };
 
-typedef struct estruturaEnvioRF tipoDadosEnvioRF;
-tipoDadosEnvioRF dadosEnvioRF;
+typedef struct estruturaDadosRF tipoDadosRF;
+tipoDadosRF dadosEnvioRF;
+tipoDadosRF dadosRecebidoRF;
+
 
 NewPing sonar(SENSOR_DIST_TRIG, SENSOR_DIST_ECHO);
 RF24 radio(8,//CE(enable)
@@ -67,47 +70,53 @@ void loop() {
   if((millis() >= TEMPO_ESPERA_LEITURA + tempoCorrido)){
       
     //Verifica se o transmissor de radio esta funcionando
-    if(radio.isChipConnected()){
+   /* if(radio.isChipConnected()){
       Serial.println("Dispositivo de radio operante");
       dadosEnvioRF.dispositivoOperanteRF = true;
     }else{
       Serial.println("Dispositivo de radio inoperante");
       dadosEnvioRF.dispositivoOperanteRF = false;
-      }
+      }*/
       
-    nivelAguaAgora = sonar.ping_cm();
-    Serial.println(nivelAguaAgora);  
-    if(nivelAguaAgora != nivelAguaAnterior){
-      Serial.println("Teste");
-      nivelAguaAnterior != nivelAguaAgora; 
+    nivelLiquidoAgora = sonar.ping_cm();
+    //Serial.println(nivelLiquidoAgora);  
+    if(nivelLiquidoAgora != nivelAguaAnterior){
+      //Serial.println("Teste");
+      nivelAguaAnterior != nivelLiquidoAgora; 
 
       //Aciona a bomba caso tenha atingido o nivel vazio
-      if(nivelAguaAgora >= nivelVazio){
+      if(nivelLiquidoAgora >= nivelVazio){
         
-        dadosEnvioRF.bombaLigada = true;
+        dadosEnvioRF.bombaLigadaRF = true;
         digitalWrite(BOMBA_PIN, HIGH);
         }
-        else if(nivelAguaAgora <= nivelCheio){
-          dadosEnvioRF.bombaLigada = false;
+        else if(nivelLiquidoAgora <= nivelCheio){
+          dadosEnvioRF.bombaLigadaRF = false;
           digitalWrite(BOMBA_PIN, LOW);
           }
         
-      dadosEnvioRF.nivelAgua = nivelAguaAgora;
+      dadosEnvioRF.nivelLiquidoRF = nivelLiquidoAgora;
+
+      Serial.print("Nivel liquido enviado ao display - ");
+      Serial.println(dadosEnvioRF.nivelLiquidoRF);
       
       radio.stopListening();  
       
-      if(radio.write(&dadosEnvioRF, sizeof(tipoDadosEnvioRF))){//enviando a informacao
-        Serial.println("Dado enviado com sucesso - Emissor");
+      if(radio.write(&dadosEnvioRF, sizeof(tipoDadosRF))){//enviando a informacao
+        Serial.println("[SUCESSO]-Envio dados display");
      }else{
-        Serial.println("Erro de envio do Emissor");
+        Serial.println("[ERRO]-Envio dados display");
         } 
         
       radio.startListening();
       
       if(radio.available()){ //verifica se estou recebendo alguma informacao
-        radio.read(&dadosRecebidos, sizeof(int)); //recebendo dado
-        Serial.println("Valor dados recebido - Receptor");
-        Serial.println(dadosRecebidos);
+        radio.read(&dadosRecebidoRF, sizeof(tipoDadosRF)); //recebendo dado
+        Serial.println("[SUCESSO]-Recebido comando ligar/desligar bomba");
+        Serial.print("Ligar/Desligar bomba - ");
+        Serial.println(dadosRecebidoRF.bombaLigadaRF);
+
+        dadosEnvioRF.bombaLigadaRF = dadosRecebidoRF.bombaLigadaRF;
       }
      }
      tempoCorrido = millis();
