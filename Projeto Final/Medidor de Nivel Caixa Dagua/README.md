@@ -33,5 +33,4 @@ Ao ligar o sistema precionando o botão, a informação do nível da água e est
 A bomba é acionada de forma automática pelo dispositivo acoplado ao reservatório, mas por segurança, é possível ligar e desligar a mesma, utilizando um segundo botão próximo ao display. 
 
 
-![LMaqEstadosogo](https://github.com/AndreSalgueiro/SE/blob/master/Projeto%20Final/Maq%20etado%20inicial.jpg)
-![Logo](https://user-images.githubusercontent.com/40214038/63216360-4d2ae000-c10a-11e9-9053-66f0a1c93a1a.png)
+![MaqEstadoLogo](https://github.com/AndreSalgueiro/SE/blob/master/Projeto%20Final/Medidor%20de%20Nivel%20Caixa%20Dagua/Maq_etado_inicial.jpg
