@@ -5,7 +5,7 @@
   O projeto tem como objetivo desenvolver um sistema que forneça informações referente ao nível de líquido contido num reservatório, utilazando comunicação de rádio frequência e o acionamento automática de uma bomba responsável por manter o reservatório cheio.
 
 Componentes:
-- Placas Arduino Uno; 
+* Placas Arduino Uno; 
 - Sensor Ultrassônico HC-SR04;
 - Emissore e Receptore de Radio Frequência 2,4ghz Nrf24l01;
 - Protoboards;
