@@ -12,5 +12,8 @@ Componentes:
 - Led
 - Registor
 - Jump Macho/Fêmea
+-  Display LCD Gráfico 128×64 Backlight Azul
+
+
 
 ![LMaqEstadosogo](https://github.com/AndreSalgueiro/SE/blob/master/Projeto%20Final/Maq%20etado%20inicial.jpg)
