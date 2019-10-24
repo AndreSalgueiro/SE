@@ -1,5 +1,5 @@
 #define LED_PIN 13
-#define BUT_ACEL_PIN 2
+#define BUT_ACEL_PIN A0
 #define BUT_DESAC_PIN 7
 
 void setup() {
@@ -13,8 +13,8 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  int butonAcel = digitalRead(BUT_ACEL_PIN);
-  int butonDesac = digitalRead(BUT_DESAC_PIN);
+  int butonAcel = analogRead(BUT_ACEL_PIN);
+  //int butonDesac = digitalRead(BUT_DESAC_PIN);
 
   Serial.print("Valor botao - ");
   Serial.println(butonAcel);

@@ -6,6 +6,8 @@
 //#define DIST_OBSTACULO 15
 #define BOTAO_SISTEMA_PIN 6
 #define BOTAO_BOMBA_PIN 2
+#define BOTAO_CONTROLE_MANUAL_PIN A0
+#define LED_PIN_13 13
 
 int i =0;
 int estadoBotaoSistema = 0;
@@ -17,6 +19,8 @@ int start = 0;
 int estado = 1;
 int estadoAnterior = 1000;
 int nivelLiquido = 0;
+int botaoControleManualAcionado = 1023;
+int botaoControleManualAcionadoAnterior = 1023;
 
 byte enderecos[][6] = {"1Andre","2Erika"}; 
 
@@ -81,6 +85,8 @@ void setup() {
   //pinMode(PIEZO_PIN,OUTPUT);
   pinMode(BOTAO_SISTEMA_PIN,INPUT);
   pinMode(BOTAO_BOMBA_PIN,INPUT);
+  pinMode(BOTAO_CONTROLE_MANUAL_PIN, INPUT);
+  digitalWrite(LED_PIN_13, LOW);
 
   Serial.begin(9600); 
   //printf_begin();
@@ -143,6 +149,7 @@ void loop() {
       
       estadoBotaoSistema = digitalRead(BOTAO_SISTEMA_PIN);
       estadoBotaoBomba = digitalRead(BOTAO_BOMBA_PIN);
+      botaoControleManualAcionado = analogRead(BOTAO_CONTROLE_MANUAL_PIN);
       
       if(estadoBotaoSistema != estadoBotaoDesligaAnt){
         estado_0();
@@ -162,10 +169,22 @@ void loop() {
         estado_2();
       }
         //Monitora botao desligar bomba
-        if(estadoBotaoBomba != estadoBotaoBombaAnt){
+        if(botaoControleManualAcionado != botaoControleManualAcionadoAnterior){
+          if(dadosEnvioRF.botaoControleManualAcionadoRF){
+            dadosEnvioRF.botaoControleManualAcionadoRF = false;
+            
+          }else{
+            dadosEnvioRF.botaoControleManualAcionadoRF = true;
+             }
+          }
 
-          dadosEnvioRF.botaoBombaAcionadoRF = true;
+        if(dadosEnvioRF.botaoControleManualAcionadoRF){
+          digitalWrite(LED_PIN_13, HIGH);
           
+          if(estadoBotaoBomba != estadoBotaoBombaAnt){
+
+            dadosEnvioRF.botaoBombaAcionadoRF = true;
+        
           if(dadosRecebidoRF.bombaLigadaRF){
             dadosEnvioRF.bombaLigadaRF = false;
             
@@ -182,8 +201,11 @@ void loop() {
           } 
           
           radio.startListening();
-        
-      } 
+      
+        }  
+        }digitalWrite(LED_PIN_13, LOW);{
+          
+          }
 
         break;
       }
