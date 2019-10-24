@@ -16,13 +16,15 @@ boolean estatosRecebidoBombaRF = false;
 
 unsigned long tempoCorrido = 0;
 
-byte enderecos[][6] = {"1Node","2Node"};
+byte enderecos[][6] = {"1Andre","2Erika"};
 
 struct estruturaDadosRF{
 
   boolean bombaLigadaRF = false;
   boolean dispositivoOperanteRF = false;
   int nivelLiquidoRF = 0;
+  boolean botaoBombaAcionadoRF = false;
+  boolean botaoControleManualAcionadoRF = false;
   
   };
 
@@ -67,7 +69,7 @@ void loop() {
   //Serial.println(tempoCorrido);
   //Serial.print("Tempo millis = ");
   //Serial.println(millis());
-  if((millis() >= TEMPO_ESPERA_LEITURA + tempoCorrido)){
+  //if((millis() >= TEMPO_ESPERA_LEITURA + tempoCorrido)){
       
     //Verifica se o transmissor de radio esta funcionando
    /* if(radio.isChipConnected()){
@@ -80,17 +82,31 @@ void loop() {
       
     nivelLiquidoAgora = sonar.ping_cm();
     //Serial.println(nivelLiquidoAgora);  
-    if(nivelLiquidoAgora != nivelAguaAnterior){
+    //if(nivelLiquidoAgora != nivelAguaAnterior){
       //Serial.println("Teste");
       nivelAguaAnterior != nivelLiquidoAgora; 
 
+      
+      if(dadosRecebidoRF.botaoBombaAcionadoRF){
+
+        if(dadosRecebidoRF.bombaLigadaRF && nivelLiquidoAgora >= nivelCheio)){
+            digitalWrite(BOMBA_PIN, HIGH);  
+          }else if(!dadosRecebidoRF.bombaLigadaRF){
+              
+            }
+            
+        
+        }
+        else {
+          
+          }
       //Aciona a bomba caso tenha atingido o nivel vazio
-      if(nivelLiquidoAgora >= nivelVazio){
+      if((nivelLiquidoAgora >= nivelVazio){
         
         dadosEnvioRF.bombaLigadaRF = true;
         digitalWrite(BOMBA_PIN, HIGH);
         }
-        else if(nivelLiquidoAgora <= nivelCheio){
+        else if(nivelLiquidoAgora <= nivelCheio || !dadosEnvioRF.bombaLigadaRF){
           dadosEnvioRF.bombaLigadaRF = false;
           digitalWrite(BOMBA_PIN, LOW);
           }
@@ -107,18 +123,22 @@ void loop() {
      }else{
         Serial.println("[ERRO]-Envio dados display");
         } 
-        
-      radio.startListening();
-      
-      if(radio.available()){ //verifica se estou recebendo alguma informacao
-        radio.read(&dadosRecebidoRF, sizeof(tipoDadosRF)); //recebendo dado
-        Serial.println("[SUCESSO]-Recebido comando ligar/desligar bomba");
-        Serial.print("Ligar/Desligar bomba - ");
-        Serial.println(dadosRecebidoRF.bombaLigadaRF);
 
-        dadosEnvioRF.bombaLigadaRF = dadosRecebidoRF.bombaLigadaRF;
-      }
-     }
+      radio.startListening();
+        
+     //}
      tempoCorrido = millis();
+   // }
+
+    radio.startListening();
+      
+    if(radio.available()){ //verifica se estou recebendo alguma informacao
+      radio.read(&dadosRecebidoRF, sizeof(tipoDadosRF)); //recebendo dado
+      Serial.println("[SUCESSO]-Recebido comando ligar/desligar bomba");
+      Serial.print("Ligar/Desligar bomba - ");
+      Serial.println(dadosRecebidoRF.bombaLigadaRF);
+      dadosEnvioRF.bombaLigadaRF = dadosRecebidoRF.bombaLigadaRF;
+
     }
+  
   }

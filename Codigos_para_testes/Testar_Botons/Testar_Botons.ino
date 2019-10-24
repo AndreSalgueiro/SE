@@ -1,5 +1,5 @@
 #define LED_PIN 13
-#define BUT_ACEL_PIN 6
+#define BUT_ACEL_PIN 2
 #define BUT_DESAC_PIN 7
 
 void setup() {
@@ -16,20 +16,21 @@ void loop() {
   int butonAcel = digitalRead(BUT_ACEL_PIN);
   int butonDesac = digitalRead(BUT_DESAC_PIN);
 
-  Serial.print("Valor botao 1 - ");
+  Serial.print("Valor botao - ");
   Serial.println(butonAcel);
-  Serial.print("Valor botao 2 - ");
-  Serial.println(butonDesac);
+ // Serial.print("Valor botao 2 - ");
+//  Serial.println(butonDesac);
   
   
   if(!butonAcel){
-    digitalWrite(LED_PIN, HIGH);
+   // digitalWrite(LED_PIN, HIGH);
+   Serial.print("Apertei botao - ");
     Serial.println(butonAcel);
     }
-    if(!butonDesac){
-    Serial.println(butonAcel);  
-    digitalWrite(LED_PIN, LOW);
-    }
+   // if(!butonDesac){
+   // Serial.println(butonAcel);  
+    //digitalWrite(LED_PIN, LOW);
+    //}
     
  /* if(!butonDesac){
     digitalWrite(LED_PIN, HIGH);
