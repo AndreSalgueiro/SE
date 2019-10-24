@@ -87,15 +87,19 @@ void loop() {
       nivelAguaAnterior != nivelLiquidoAgora; 
 
       
-      if(dadosRecebidoRF.botaoBombaAcionadoRF){
+      if(dadosRecebidoRF.botaoControleManualAcionadoRF){
 
-        if(dadosRecebidoRF.bombaLigadaRF && nivelLiquidoAgora >= nivelCheio)){
-            digitalWrite(BOMBA_PIN, HIGH);  
-          }else if(!dadosRecebidoRF.bombaLigadaRF){
-              
-            }
+        if(dadosRecebidoRF.botaoBombaAcionadoRF)){
+          
+            if(dadosRecebidoRF.bombaLigadaRF && nivelLiquidoAgora > nivelCheio){
+              digitalWrite(BOMBA_PIN, HIGH);  
+              }
+              else if(!dadosRecebidoRF.bombaLigadaRF){
+                  digitalWrite(BOMBA_PIN, HIGH);   
+                }
             
-        
+          }
+              
         }
         else {
           
@@ -106,7 +110,7 @@ void loop() {
         dadosEnvioRF.bombaLigadaRF = true;
         digitalWrite(BOMBA_PIN, HIGH);
         }
-        else if(nivelLiquidoAgora <= nivelCheio || !dadosEnvioRF.bombaLigadaRF){
+        else if(nivelLiquidoAgora <= nivelCheio){
           dadosEnvioRF.bombaLigadaRF = false;
           digitalWrite(BOMBA_PIN, LOW);
           }
