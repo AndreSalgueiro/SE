@@ -23,7 +23,7 @@ O primeiro é composto por:
   - Emissore e Receptore de Radio Frequência;
   - Led (simula o acionamento da bomba)
   
-  <p>Fica preso junto ao reservatório, é responsável por medir o nível de líquido utilizando o sensor de distância ultrasônico preso a tampa do reservatório apontando em direção ao fundo do mesmo, assim é possível medir a altura entre a parte superior do reservatório e o líquido.<br \> 
+  <p>Fica preso junto ao reservatório, é responsável por medir o nível de líquido utilizando o sensor de distância ultrasônico, preso a tampa do reservatório apontando em direção ao fundo do mesmo, assim é possível medir a altura entre a parte superior do reservatório e o líquido.<br \> 
   As medidas coletadas são analizadas e se o nível de líquido atingir o nível baixo ou alto, a bomba é ligada ou desligada respectivamente e as informações enviadas para o segundo conjunto (a bomba está sendo representada pelo LED).
 
 O segundo é composto por:
