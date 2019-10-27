@@ -24,7 +24,7 @@ struct estruturaDadosRF{
   boolean dispositivoOperanteRF = false;
   int nivelLiquidoRF = 0;
   boolean botaoBombaAcionadoRF = false;
-  boolean botaoControleManualAcionadoRF = false;
+  //boolean botaoControleManualAcionadoRF = false;
   
   };
 
@@ -86,35 +86,40 @@ void loop() {
       //Serial.println("Teste");
       nivelAguaAnterior != nivelLiquidoAgora; 
 
-      
-      if(dadosRecebidoRF.botaoControleManualAcionadoRF){
-
-        if(dadosRecebidoRF.botaoBombaAcionadoRF)){
-          
-            if(dadosRecebidoRF.bombaLigadaRF && nivelLiquidoAgora > nivelCheio){
-              digitalWrite(BOMBA_PIN, HIGH);  
-              }
-              else if(!dadosRecebidoRF.bombaLigadaRF){
-                  digitalWrite(BOMBA_PIN, HIGH);   
-                }
+      /////////////////////////////
+     //Controle Manual da Bomba
+     /////////////////////////////
+      if(dadosRecebidoRF.botaoBombaAcionadoRF)){
+          //Se a bomba estava desligada entao liga
+          if(dadosRecebidoRF.bombaLigadaRF){
+            digitalWrite(BOMBA_PIN, HIGH);
+              //Desliga a bomba se o nivel maximo foi atingido
+              if(nivelLiquidoAgora <= nivelCheio){
+                digitalWrite(BOMBA_PIN, LOW); 
+               } 
+            }
+          else if(!dadosRecebidoRF.bombaLigadaRF){
+            digitalWrite(BOMBA_PIN, LOW);   
+          }
+       }
             
-          }
-              
-        }
-        else {
+     /////////////////////////////
+     //Controle Automatico Bomba
+     /////////////////////////////
+      else {
+        //Lig a bomba caso tenha atingido o nivel vazio
+        if((nivelLiquidoAgora >= nivelVazio){
           
+          dadosEnvioRF.bombaLigadaRF = true;
+          digitalWrite(BOMBA_PIN, HIGH);
           }
-      //Aciona a bomba caso tenha atingido o nivel vazio
-      if((nivelLiquidoAgora >= nivelVazio){
-        
-        dadosEnvioRF.bombaLigadaRF = true;
-        digitalWrite(BOMBA_PIN, HIGH);
-        }
-        else if(nivelLiquidoAgora <= nivelCheio){
-          dadosEnvioRF.bombaLigadaRF = false;
-          digitalWrite(BOMBA_PIN, LOW);
-          }
-        
+          //Desliga a bomba caso tenha atingido o nivel cheio
+          else if(nivelLiquidoAgora <= nivelCheio){
+            dadosEnvioRF.bombaLigadaRF = false;
+            digitalWrite(BOMBA_PIN, LOW);
+            }
+      }
+      
       dadosEnvioRF.nivelLiquidoRF = nivelLiquidoAgora;
 
       Serial.print("Nivel liquido enviado ao display - ");
