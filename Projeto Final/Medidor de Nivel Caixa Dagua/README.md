@@ -2,7 +2,7 @@
 
 # Sensor de Nível de Caixa D'água com Arduino
 
-  O projeto tem como objetivo desenvolver um sistema que forneça informações referente ao nível de líquido contido num reservatório, utilazando comunicação de rádio frequência e o acionamento automática de uma bomba responsável por manter o reservatório cheio.
+  O projeto tem como objetivo desenvolver um sistema que forneça informações referente ao nível de líquido contido num reservatório, utilazando comunicação de rádio frequência com acionamento automática de uma bomba responsável por manter o reservatório cheio.
 
 Componentes:
 - Placas Arduino Uno; 
