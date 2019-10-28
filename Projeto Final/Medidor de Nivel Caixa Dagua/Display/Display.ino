@@ -19,8 +19,8 @@ int start = 0;
 int estado = 1;
 int estadoAnterior = 1000;
 int nivelLiquido = 0;
-int botaoControleManualAcionado = 1023;
-int botaoControleManualAcionadoAnterior = 1023;
+int botaoControleManualAcionado = 1;
+int botaoControleManualAcionadoAnterior = 1;
 boolean controleManualAcionado = false;
 
 byte enderecos[][6] = {"1Andre","2Erika"}; 
@@ -31,8 +31,7 @@ struct estruturaDadosRF{
   boolean dispositivoOperanteRF = false;
   int nivelLiquidoRF = 0;
   boolean botaoBombaAcionadoRF = false;
-  //boolean botaoControleManualAcionadoRF = false;
-  
+  boolean controleManualAcionadoRF = false;
   };
 
 typedef struct estruturaDadosRF tipoDadosRF;
@@ -150,7 +149,7 @@ void loop() {
       
       estadoBotaoSistema = digitalRead(BOTAO_SISTEMA_PIN);
       estadoBotaoBomba = digitalRead(BOTAO_BOMBA_PIN);
-      botaoControleManualAcionado = analogRead(BOTAO_CONTROLE_MANUAL_PIN);
+      botaoControleManualAcionado = digitalRead(BOTAO_CONTROLE_MANUAL_PIN);
       
       if(estadoBotaoSistema != estadoBotaoDesligaAnt){
         estado_0();
@@ -170,7 +169,7 @@ void loop() {
         estado_2();
       }
         //Monitora botao controle manual bomba
-        if(botaoControleManualAcionado HIGH && (botaoControleManualAcionado != botaoControleManualAcionadoAnterior) ){
+        if(botaoControleManualAcionado == HIGH && (botaoControleManualAcionado != botaoControleManualAcionadoAnterior) ){
           //Se já estava no controle manual entao desliga
           if(controleManualAcionado){
             controleManualAcionado = false;
@@ -178,6 +177,8 @@ void loop() {
           }else{
             controleManualAcionado = true;
              }
+
+             dadosEnvioRF.controleManualAcionadoRF = controleManualAcionado;
           }
 
           botaoControleManualAcionadoAnterior = botaoControleManualAcionado;
@@ -185,8 +186,8 @@ void loop() {
         if(controleManualAcionado){
           digitalWrite(LED_PIN_13, HIGH);
           
-          if(estadoBotaoBomba = HIGH && (estadoBotaoBomba != estadoBotaoBombaAnt) ){
-
+          if(estadoBotaoBomba == HIGH && (estadoBotaoBomba != estadoBotaoBombaAnt) ){
+            Serial.println("Acionei botao bomba");
             dadosEnvioRF.botaoBombaAcionadoRF = true;
         
           if(dadosRecebidoRF.bombaLigadaRF){
@@ -208,12 +209,9 @@ void loop() {
 
         }
         
-        estadoBotaoBombaAnt = estadoBotaoBomba;
+          estadoBotaoBombaAnt = estadoBotaoBomba;
        
-        }digitalWrite(LED_PIN_13, LOW);{
-          
-          }
-
+        }
         break;
       }
       case 2:{
@@ -235,6 +233,8 @@ void loop() {
         Serial.println(nivelLiquido);
         Serial.print("Estato da bomba - ");
         Serial.println(dadosRecebidoRF.bombaLigadaRF);
+        Serial.print("Controle manual ativado = ");
+        Serial.println(controleManualAcionado);
         Serial.println("################");
         
         estado_1();
@@ -246,6 +246,7 @@ void loop() {
           
        }
   }
+
 }
 //Aciona bomba ao precioanar botao utilizando interrupcao
 void interrupcaoBotaoBomba(){

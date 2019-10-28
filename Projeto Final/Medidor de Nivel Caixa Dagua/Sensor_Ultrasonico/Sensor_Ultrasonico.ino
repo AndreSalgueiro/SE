@@ -24,8 +24,7 @@ struct estruturaDadosRF{
   boolean dispositivoOperanteRF = false;
   int nivelLiquidoRF = 0;
   boolean botaoBombaAcionadoRF = false;
-  //boolean botaoControleManualAcionadoRF = false;
-  
+  boolean controleManualAcionadoRF = false;
   };
 
 typedef struct estruturaDadosRF tipoDadosRF;
@@ -89,26 +88,29 @@ void loop() {
       /////////////////////////////
      //Controle Manual da Bomba
      /////////////////////////////
-      if(dadosRecebidoRF.botaoBombaAcionadoRF)){
-          //Se a bomba estava desligada entao liga
-          if(dadosRecebidoRF.bombaLigadaRF){
-            digitalWrite(BOMBA_PIN, HIGH);
-              //Desliga a bomba se o nivel maximo foi atingido
-              if(nivelLiquidoAgora <= nivelCheio){
-                digitalWrite(BOMBA_PIN, LOW); 
-               } 
+     if(dadosRecebidoRF.controleManualAcionadoRF){
+      
+        if(dadosRecebidoRF.botaoBombaAcionadoRF){
+          Serial.println("Entrei no modo MANUAL");
+            //Se a bomba estava desligada entao liga
+            if(dadosRecebidoRF.bombaLigadaRF){
+              digitalWrite(BOMBA_PIN, HIGH);
+                //Desliga a bomba se o nivel maximo foi atingido
+                if(nivelLiquidoAgora <= nivelCheio){
+                  digitalWrite(BOMBA_PIN, LOW); 
+                 } 
+              }
+            else if(!dadosRecebidoRF.bombaLigadaRF){
+              digitalWrite(BOMBA_PIN, LOW);   
             }
-          else if(!dadosRecebidoRF.bombaLigadaRF){
-            digitalWrite(BOMBA_PIN, LOW);   
-          }
-       }
-            
-     /////////////////////////////
-     //Controle Automatico Bomba
-     /////////////////////////////
-      else {
+        }
+       /////////////////////////////
+       //Controle Automatico Bomba
+       /////////////////////////////
+      }else {
         //Lig a bomba caso tenha atingido o nivel vazio
-        if((nivelLiquidoAgora >= nivelVazio){
+        Serial.println("Entrei no modo AUTOMATICO");
+        if(nivelLiquidoAgora >= nivelVazio){
           
           dadosEnvioRF.bombaLigadaRF = true;
           digitalWrite(BOMBA_PIN, HIGH);
