@@ -41,9 +41,9 @@ tipoDadosRF dadosEnvioRF;
 U8GLIB_ST7920_128X64_1X u8g( 10,  //E
                              9,  //R/W
                              8,  //RS
-                             11); //RST
+                             4); //RST
 
-RF24 radio(7,//CE(enable)
+RF24 radio(7,//CE(enable) 
            3//CSN (select)
             );
 
