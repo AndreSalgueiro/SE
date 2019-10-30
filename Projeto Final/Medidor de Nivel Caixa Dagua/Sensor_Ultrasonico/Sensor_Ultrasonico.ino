@@ -12,17 +12,15 @@ int dadosRecebidos = 0;
 int nivelVazio = 15;
 int nivelCheio = 5;
 int nivelLiquidoAgora = 0;
-boolean estatosRecebidoBombaRF = false;
-
 unsigned long tempoCorrido = 0;
 
-byte enderecos[][6] = {"1Andre","2Erika"};
+byte enderecos[][7] = {"1Nody","2Nody"};
 
 struct estruturaDadosRF{
 
+  int nivelLiquidoRF = 0;
   boolean bombaLigadaRF = false;
   boolean dispositivoOperanteRF = false;
-  int nivelLiquidoRF = 0;
   boolean botaoBombaAcionadoRF = false;
   boolean controleManualAcionadoRF = false;
   };
@@ -93,14 +91,18 @@ void loop() {
         if(dadosRecebidoRF.botaoBombaAcionadoRF){
           Serial.println("Entrei no modo MANUAL");
             //Se a bomba estava desligada entao liga
+            Serial.println(dadosRecebidoRF.bombaLigadaRF);
             if(dadosRecebidoRF.bombaLigadaRF){
+              dadosEnvioRF.bombaLigadaRF = true;
               digitalWrite(BOMBA_PIN, HIGH);
                 //Desliga a bomba se o nivel maximo foi atingido
                 if(nivelLiquidoAgora <= nivelCheio){
+                  dadosEnvioRF.bombaLigadaRF = false;
                   digitalWrite(BOMBA_PIN, LOW); 
                  } 
               }
             else if(!dadosRecebidoRF.bombaLigadaRF){
+              dadosEnvioRF.bombaLigadaRF = false;
               digitalWrite(BOMBA_PIN, LOW);   
             }
         }
@@ -147,7 +149,7 @@ void loop() {
       Serial.println("[SUCESSO]-Recebido comando ligar/desligar bomba");
       Serial.print("Ligar/Desligar bomba - ");
       Serial.println(dadosRecebidoRF.bombaLigadaRF);
-      dadosEnvioRF.bombaLigadaRF = dadosRecebidoRF.bombaLigadaRF;
+      //dadosEnvioRF.bombaLigadaRF = dadosRecebidoRF.bombaLigadaRF;
 
     }
   

@@ -7,7 +7,7 @@
 #define BOTAO_SISTEMA_PIN 6
 #define BOTAO_BOMBA_PIN 2
 #define BOTAO_CONTROLE_MANUAL_PIN A0
-#define LED_PIN_13 13
+#define LED_PIN_5 5
 
 int i =0;
 int estadoBotaoSistema = 0;
@@ -24,7 +24,7 @@ int botaoControleManualAcionadoAnterior = 1;
 boolean controleManualAcionado = false;
 boolean estadoControleManualAlterado = false;
 
-byte enderecos[][6] = {"1Andre","2Erika"}; 
+byte enderecos[][7] = {"1Nody","2Nody"}; 
 
 struct estruturaDadosRF{
 
@@ -87,7 +87,7 @@ void setup() {
   pinMode(BOTAO_SISTEMA_PIN,INPUT);
   pinMode(BOTAO_BOMBA_PIN,INPUT);
   pinMode(BOTAO_CONTROLE_MANUAL_PIN, INPUT);
-  digitalWrite(LED_PIN_13, LOW);
+  digitalWrite(LED_PIN_5, LOW);
 
   Serial.begin(9600); 
   //printf_begin();
@@ -162,10 +162,10 @@ void loop() {
       if(radio.available()){ //verifica se estou recebendo alguma informacao
         radio.read(&dadosRecebidoRF, sizeof(tipoDadosRF));//recebendo dado
         Serial.println("[SUCESSO]- Dados Recebido Medidor Nivel");
-        Serial.print("Estatos bomba - " );
-        Serial.println(dadosRecebidoRF.bombaLigadaRF);
-        Serial.print("Nivel liquido - ");
-        Serial.println(dadosRecebidoRF.nivelLiquidoRF);
+       // Serial.print("Estatos bomba - " );
+        //Serial.println(dadosRecebidoRF.bombaLigadaRF);
+        //Serial.print("Nivel liquido - ");
+        //Serial.println(dadosRecebidoRF.nivelLiquidoRF);
 
         estado_2();
       }
@@ -191,7 +191,7 @@ void loop() {
         Serial.println(estadoControleManualAlterado);
         
         if(estadoControleManualAlterado){
-          digitalWrite(LED_PIN_13, HIGH);
+          digitalWrite(LED_PIN_5, HIGH);
           
           if(controleManualAcionado){
             
@@ -235,10 +235,10 @@ void loop() {
         imprimeEstadoAtual(estado);
         //chama estado 3 que envia os dados para LCD
          
-        Serial.print("Estado botao bomba - ");
-        Serial.println(estadoBotaoBomba);
-        Serial.print("Estado botao bomba ANTERIOR - ");
-        Serial.println(estadoBotaoBombaAnt);
+      //  Serial.print("Estado botao bomba - ");
+      //  Serial.println(estadoBotaoBomba);
+      //  Serial.print("Estado botao bomba ANTERIOR - ");
+      //  Serial.println(estadoBotaoBombaAnt);
         
         //Dados Display
         nivelLiquido = dadosRecebidoRF.nivelLiquidoRF;
