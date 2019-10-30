@@ -22,14 +22,15 @@ int nivelLiquido = 0;
 int botaoControleManualAcionado = 1;
 int botaoControleManualAcionadoAnterior = 1;
 boolean controleManualAcionado = false;
+boolean estadoControleManualAlterado = false;
 
 byte enderecos[][6] = {"1Andre","2Erika"}; 
 
 struct estruturaDadosRF{
 
+  int nivelLiquidoRF = 0;
   boolean bombaLigadaRF = false;
   boolean dispositivoOperanteRF = false;
-  int nivelLiquidoRF = 0;
   boolean botaoBombaAcionadoRF = false;
   boolean controleManualAcionadoRF = false;
   };
@@ -170,33 +171,49 @@ void loop() {
       }
         //Monitora botao controle manual bomba
         if(botaoControleManualAcionado == HIGH && (botaoControleManualAcionado != botaoControleManualAcionadoAnterior) ){
+         
           //Se já estava no controle manual entao desliga
           if(controleManualAcionado){
             controleManualAcionado = false;
+          
           //Se nao estava no controle manual entao entre no modo liga/desliga bomba manual  
           }else{
             controleManualAcionado = true;
              }
 
              dadosEnvioRF.controleManualAcionadoRF = controleManualAcionado;
+             estadoControleManualAlterado = true;
           }
 
           botaoControleManualAcionadoAnterior = botaoControleManualAcionado;
 
-        if(controleManualAcionado){
+        Serial.print("Controle MANUAL foi alterado? = ");
+        Serial.println(estadoControleManualAlterado);
+        
+        if(estadoControleManualAlterado){
           digitalWrite(LED_PIN_13, HIGH);
           
-          if(estadoBotaoBomba == HIGH && (estadoBotaoBomba != estadoBotaoBombaAnt) ){
-            Serial.println("Acionei botao bomba");
-            dadosEnvioRF.botaoBombaAcionadoRF = true;
-        
-          if(dadosRecebidoRF.bombaLigadaRF){
-            dadosEnvioRF.bombaLigadaRF = false;
+          if(controleManualAcionado){
             
-          }else{
-            dadosEnvioRF.bombaLigadaRF = true;
+            //Enquanto estiver no controle MANUAL monitora o botao de liga/desliga bomba
+            if(estadoBotaoBomba == HIGH && (estadoBotaoBomba != estadoBotaoBombaAnt) ){
+              Serial.println("Acionei botao bomba");
+              dadosEnvioRF.botaoBombaAcionadoRF = true;
+
+              //Se a bomba estava ligada entao desliga
+              if(dadosRecebidoRF.bombaLigadaRF){
+                dadosEnvioRF.bombaLigadaRF = false;
+                
+              //Se a bomba estava desligada entao liga  
+              }else{
+                dadosEnvioRF.bombaLigadaRF = true;
+                }
             }
 
+            estadoBotaoBombaAnt = estadoBotaoBomba;
+            
+          }
+          //So envia dados para o medidor de nivel se houve acionamento do controle manual
           radio.stopListening();  
         
           if(radio.write(&dadosEnvioRF, sizeof(tipoDadosRF))){//enviando a informacao
@@ -207,10 +224,10 @@ void loop() {
           
           radio.startListening();
 
-        }
-        
-          estadoBotaoBombaAnt = estadoBotaoBomba;
-       
+          if(controleManualAcionado == false){
+              estadoControleManualAlterado = false;
+            }
+
         }
         break;
       }

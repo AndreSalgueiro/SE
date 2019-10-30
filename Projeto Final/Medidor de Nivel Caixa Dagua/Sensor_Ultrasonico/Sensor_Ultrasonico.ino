@@ -89,7 +89,7 @@ void loop() {
      //Controle Manual da Bomba
      /////////////////////////////
      if(dadosRecebidoRF.controleManualAcionadoRF){
-      
+      Serial.println("Entrei no modo manual no sensor caixa dagua");
         if(dadosRecebidoRF.botaoBombaAcionadoRF){
           Serial.println("Entrei no modo MANUAL");
             //Se a bomba estava desligada entao liga
@@ -110,8 +110,7 @@ void loop() {
       }else {
         //Lig a bomba caso tenha atingido o nivel vazio
         Serial.println("Entrei no modo AUTOMATICO");
-        if(nivelLiquidoAgora >= nivelVazio){
-          
+        if(nivelLiquidoAgora > nivelCheio){
           dadosEnvioRF.bombaLigadaRF = true;
           digitalWrite(BOMBA_PIN, HIGH);
           }
