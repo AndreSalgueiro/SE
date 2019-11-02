@@ -18,11 +18,14 @@ int estadoBotaoDesligaAnt = 1;
 int start = 0;
 int estado = 1;
 int estadoAnterior = 1000;
-int nivelLiquido = 0;
 int botaoControleManualAcionado = 1;
-int botaoControleManualAcionadoAnterior = 1;
+int nivelLiquido = 0;
 boolean controleManualAcionado = false;
 boolean estadoControleManualAlterado = false;
+int botaoControleManualAcionadoAnterior = 1;
+char nivelLiquidoDisplay [5];
+const char *controleManualDisplay = "";
+const char *estadoBombaDisplay = ""; 
 
 byte enderecos[][7] = {"1Nody","2Nody"}; 
 
@@ -39,10 +42,10 @@ typedef struct estruturaDadosRF tipoDadosRF;
 tipoDadosRF dadosRecebidoRF;
 tipoDadosRF dadosEnvioRF;
 
-U8GLIB_ST7920_128X64_1X u8g( 10,  //E
-                             9,  //R/W
-                             8,  //RS
-                             4); //RST
+U8GLIB_ST7920_128X64_1X u8g( 10,  //E (6)
+                             9,  //R/W (5)
+                             8,  //RS (4)
+                             4); //RST (7)
 
 RF24 radio(7,//CE(enable) 
            3//CSN (select)
@@ -91,6 +94,10 @@ void setup() {
 
   Serial.begin(9600); 
   //printf_begin();
+
+  u8g.setFont(u8g_font_courB10); //seleciona fonte Display
+  u8g.setColorIndex(1);            //desenhar com pixels on
+
   radio.begin();
 
   radio.openWritingPipe(enderecos[0]);//abre canal de comunicacao de escrita
@@ -239,9 +246,26 @@ void loop() {
       //  Serial.println(estadoBotaoBomba);
       //  Serial.print("Estado botao bomba ANTERIOR - ");
       //  Serial.println(estadoBotaoBombaAnt);
-        
+      
+        //Transformacao dos dados para exibicao no display
+        if(dadosRecebidoRF.nivelLiquidoRF <= nivelCheio && dadosRecebidoRF.nivelLiquidoRF >= 5){
+          nivelLiquido = "100";
+          }else if(dadosRecebidoRF.nivelLiquidoRF >= 6 && dadosRecebidoRF.nivelLiquidoRF <= 7){
+            nivelLiquido = "90";
+            }
+        if(dadosRecebidoRF.bombaLigadaRF){
+           estadoBombaDisplay = "ON";
+          }else{
+            estadoBombaDisplay = "OFF";
+            }
+
+         if(controleManualAcionado){
+            controleManualDisplay= "ON";
+          }else{
+            controleManualDisplay = "OFF";
+            }
+          
         //Dados Display
-        nivelLiquido = dadosRecebidoRF.nivelLiquidoRF;
         Serial.println("################");
         Serial.println("////////////////");
         Serial.println("///Dados Display////");
@@ -253,6 +277,13 @@ void loop() {
         Serial.print("Controle manual ativado = ");
         Serial.println(controleManualAcionado);
         Serial.println("################");
+
+        
+        u8g.firstPage();
+        do {   
+         desenhar();
+        } while( u8g.nextPage() );
+
         
         estado_1();
         break;
@@ -278,3 +309,33 @@ void interrupcaoBotaoBomba(){
   Serial.println(dadosEnvioRF.bombaLigadaRF);
   
   }
+
+  void desenhar(){
+
+   u8g.drawFrame(0,0,127,31);            //desenha retângulo superior
+   u8g.drawFrame(0,33,127,31);           //desenha retângulo inferior
+
+   // converte float para strings char u8g
+   u8g.drawStr(5, 13, "Manual");       //mostra temperatura
+   u8g.drawStr(60, 13, "-");
+   //dtostrf(controleManualAcionadoDisplay, 3, 1, controleManualDisplay);
+   u8g.drawStr(74,13, controleManualDisplay);
+  // u8g.drawStr(70,27, " C");
+
+  // converte float para strings char u8g
+   u8g.drawStr(5, 26, "Bomba");       //mostra temperatura
+   u8g.drawStr(60, 26, "-");
+   //dtostrf(bombaLigadaDisplay, 3, 1, estadoBombaDisplay);
+   u8g.drawStr(74,26, estadoBombaDisplay);
+  // u8g.drawStr(70,27, " C"); 
+
+   u8g.drawStr(39,45, "Nivel");             //mostra umidade
+   dtostrf(dadosRecebidoRF.nivelLiquidoRF, 3, 1, nivelLiquidoDisplay);
+   u8g.drawStr(47,60, nivelLiquidoDisplay);
+   //u8g.drawStr(75,60, "%");
+   /*
+   char nivelLiquidoDisplay = "";
+char controleManualDisplay = "";
+char estadoBombaDisplay = ""; */
+
+    }
