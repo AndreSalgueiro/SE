@@ -20,6 +20,9 @@ int estado = 1;
 int estadoAnterior = 1000;
 int botaoControleManualAcionado = 1;
 int nivelLiquido = 0;
+int alturaReservatorio = 30;//30cm
+int nivelCheio = 10;//10cm
+int nivelVazio = alturaReservatorio - nivelCheio;//10cm
 boolean controleManualAcionado = false;
 boolean estadoControleManualAlterado = false;
 int botaoControleManualAcionadoAnterior = 1;
@@ -248,11 +251,54 @@ void loop() {
       //  Serial.println(estadoBotaoBombaAnt);
       
         //Transformacao dos dados para exibicao no display
-        if(dadosRecebidoRF.nivelLiquidoRF <= nivelCheio && dadosRecebidoRF.nivelLiquidoRF >= 5){
+        //Primeira tentativa
+        aux = nivelVazio / 10;
+        aux2 = nivelCheio + aux;
+        
+        
+        if( (dadosRecebidoRF.nivelLiquidoRF > nivelCheio && dadosRecebidoRF.nivelLiquidoRF > aux2) || (dadosRecebidoRF.nivelLiquidoRF <= nivelCheio && dadosRecebidoRF.nivelLiquidoRF < aux2) ){
           nivelLiquido = "100";
-          }else if(dadosRecebidoRF.nivelLiquidoRF >= 6 && dadosRecebidoRF.nivelLiquidoRF <= 7){
+          }else if(dadosRecebidoRF.nivelLiquidoRF > nivelCheio && dadosRecebidoRF.nivelLiquidoRF > aux2){
             nivelLiquido = "90";
-            }
+            }else if(dadosRecebidoRF.nivelLiquidoRF >= 8 && dadosRecebidoRF.nivelLiquidoRF <= 9){
+            nivelLiquido = "80";
+            }else if(dadosRecebidoRF.nivelLiquidoRF >= 10 && dadosRecebidoRF.nivelLiquidoRF <= 11){
+            nivelLiquido = "70";
+            }else if(dadosRecebidoRF.nivelLiquidoRF >= 12 && dadosRecebidoRF.nivelLiquidoRF <= 13){
+            nivelLiquido = "60";
+            }else if(dadosRecebidoRF.nivelLiquidoRF >= 14 && dadosRecebidoRF.nivelLiquidoRF <= 15){
+            nivelLiquido = "50";
+            }else if(dadosRecebidoRF.nivelLiquidoRF >= 16 && dadosRecebidoRF.nivelLiquidoRF <= 17){
+            nivelLiquido = "40";
+            }else if(dadosRecebidoRF.nivelLiquidoRF >= 18 && dadosRecebidoRF.nivelLiquidoRF <= 19){
+            nivelLiquido = "30";
+            }else if(dadosRecebidoRF
+            }else if(dadosRecebidoRF.nivelLiquidoRF >= 20){
+            nivelLiquido = "20";.nivelLiquidoRF >= 8 && dadosRecebidoRF.nivelLiquidoRF <= 9){
+            nivelLiquido = "10";
+
+        //Segunda tentativa
+        if(dadosRecebidoRF.nivelLiquidoRF = 10){
+          nivelLiquido = "100";
+          }else if(dadosRecebidoRF.nivelLiquidoRF = 12){
+            nivelLiquido = "90";
+            }else if(dadosRecebidoRF.nivelLiquidoRF = 14){
+            nivelLiquido = "80";
+            }else if(dadosRecebidoRF.nivelLiquidoRF 16){
+            nivelLiquido = "70";
+            }else if(dadosRecebidoRF.nivelLiquidoRF >= 12 && dadosRecebidoRF.nivelLiquidoRF <= 13){
+            nivelLiquido = "60";
+            }else if(dadosRecebidoRF.nivelLiquidoRF >= 14 && dadosRecebidoRF.nivelLiquidoRF <= 15){
+            nivelLiquido = "50";
+            }else if(dadosRecebidoRF.nivelLiquidoRF >= 16 && dadosRecebidoRF.nivelLiquidoRF <= 17){
+            nivelLiquido = "40";
+            }else if(dadosRecebidoRF.nivelLiquidoRF >= 18 && dadosRecebidoRF.nivelLiquidoRF <= 19){
+            nivelLiquido = "30";
+            }else if(dadosRecebidoRF
+            }else if(dadosRecebidoRF.nivelLiquidoRF >= 20){
+            nivelLiquido = "20";.nivelLiquidoRF >= 8 && dadosRecebidoRF.nivelLiquidoRF <= 9){
+            nivelLiquido = "10";
+          
         if(dadosRecebidoRF.bombaLigadaRF){
            estadoBombaDisplay = "ON";
           }else{

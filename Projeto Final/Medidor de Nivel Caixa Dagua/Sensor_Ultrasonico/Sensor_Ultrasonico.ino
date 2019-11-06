@@ -9,8 +9,9 @@
 
 int nivelAguaAnterior = 0;
 int dadosRecebidos = 0;
-int nivelVazio = 15;
-int nivelCheio = 5;
+int alturaReservatorio = 40;//30cm
+int nivelCheio = 10;//10cm
+int nivelVazio = alturaReservatorio 10;//10cm
 int nivelLiquidoAgora = 0;
 unsigned long tempoCorrido = 0;
 
