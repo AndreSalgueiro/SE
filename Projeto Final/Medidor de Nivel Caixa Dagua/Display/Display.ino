@@ -23,9 +23,11 @@ int nivelLiquido = 0;
 int alturaReservatorio = 30;//30cm
 int nivelCheio = 10;//10cm
 int nivelVazio = alturaReservatorio - nivelCheio;//10cm
+int botaoControleManualAcionadoAnterior = 1;
+int aux = 0;
+int aux2 = 0;
 boolean controleManualAcionado = false;
 boolean estadoControleManualAlterado = false;
-int botaoControleManualAcionadoAnterior = 1;
 char nivelLiquidoDisplay [5];
 const char *controleManualDisplay = "";
 const char *estadoBombaDisplay = ""; 
@@ -168,7 +170,7 @@ void loop() {
         }
 
       // radio.startListening();
-      
+      //Recebe dados do estado 3
       if(radio.available()){ //verifica se estou recebendo alguma informacao
         radio.read(&dadosRecebidoRF, sizeof(tipoDadosRF));//recebendo dado
         Serial.println("[SUCESSO]- Dados Recebido Medidor Nivel");
@@ -225,7 +227,7 @@ void loop() {
           }
           //So envia dados para o medidor de nivel se houve acionamento do controle manual
           radio.stopListening();  
-        
+          //Envia dados ao Estado 3
           if(radio.write(&dadosEnvioRF, sizeof(tipoDadosRF))){//enviando a informacao
             Serial.println("[SUCESSO]-Envio comando desligar/ligar bomba");
           }else{
@@ -237,7 +239,6 @@ void loop() {
           if(controleManualAcionado == false){
               estadoControleManualAlterado = false;
             }
-
         }
         break;
       }
