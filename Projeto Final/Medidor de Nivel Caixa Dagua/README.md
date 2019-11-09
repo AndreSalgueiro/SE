@@ -35,4 +35,4 @@ O segundo é composto por:
   A bomba é acionada de forma automática pelo dispositivo acoplado ao reservatório, mas por segurança, é possível ligar e desligar a mesma de forma manual, utilizando um segundo botão próximo ao display.
 
 
-![MaqEstadoLogo](https://github.com/AndreSalgueiro/SE/blob/master/Projeto%20Final/Medidor%20de%20Nivel%20Caixa%20Dagua/Maq_etado_inicial.jpg)
+![MaqEstadoLogo](https://github.com/AndreSalgueiro/SE/blob/master/Projeto%20Final/Medidor%20de%20Nivel%20Caixa%20Dagua/Maquina_Estado.pnj)
