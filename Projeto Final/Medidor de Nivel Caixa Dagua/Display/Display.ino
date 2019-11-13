@@ -7,7 +7,8 @@
 #define BOTAO_SISTEMA_PIN 6
 #define BOTAO_BOMBA_PIN 2
 #define BOTAO_CONTROLE_MANUAL_PIN A0
-#define LED_PIN_5 5
+#define POTENCIOMETRO_PIN A1
+//#define LED_PIN_5 5
 
 int i =0;
 int estadoBotaoSistema = 0;
@@ -24,8 +25,7 @@ int alturaReservatorio = 30;//30cm
 int nivelCheio = 10;//10cm
 int nivelVazio = alturaReservatorio - nivelCheio;//10cm
 int botaoControleManualAcionadoAnterior = 1;
-int aux = 0;
-int aux2 = 0;
+int refinoNivelBaixoAnterior = 10;
 boolean controleManualAcionado = false;
 boolean estadoControleManualAlterado = false;
 char nivelLiquidoDisplay [5];
@@ -37,6 +37,7 @@ byte enderecos[][7] = {"1Nody","2Nody"};
 struct estruturaDadosRF{
 
   int nivelLiquidoRF = 0;
+  int refinoNivelBaixo = 10;
   boolean bombaLigadaRF = false;
   boolean dispositivoOperanteRF = false;
   boolean botaoBombaAcionadoRF = false;
@@ -95,7 +96,9 @@ void setup() {
   pinMode(BOTAO_SISTEMA_PIN,INPUT);
   pinMode(BOTAO_BOMBA_PIN,INPUT);
   pinMode(BOTAO_CONTROLE_MANUAL_PIN, INPUT);
-  digitalWrite(LED_PIN_5, LOW);
+  pinMode(POTENCIOMETRO_PIN, INPUT);
+  
+ // digitalWrite(LED_PIN_5, LOW);
 
   Serial.begin(9600); 
   //printf_begin();
@@ -163,6 +166,8 @@ void loop() {
       estadoBotaoSistema = digitalRead(BOTAO_SISTEMA_PIN);
       estadoBotaoBomba = digitalRead(BOTAO_BOMBA_PIN);
       botaoControleManualAcionado = digitalRead(BOTAO_CONTROLE_MANUAL_PIN);
+      dadosEnvio.refinoNivelBaixo = analogRead(POTENCIOMETRO_PIN);
+      //lendo o potenciometro
       
       if(estadoBotaoSistema != estadoBotaoDesligaAnt){
         estado_0();
@@ -233,13 +238,26 @@ void loop() {
           }else{
             Serial.println("[ERROR]-Envio comando desligar/ligar bomba");
           } 
-          
           radio.startListening();
 
           if(controleManualAcionado == false){
               estadoControleManualAlterado = false;
             }
-        }
+        }else if(dadosEnvio.refinoNivelBaixo != refinoNivelBaixoAnterior){
+         
+          //Se hove alteracao no potenciometro
+          radio.stopListening();  
+          
+          if(radio.write(&dadosEnvioRF, sizeof(tipoDadosRF))){//enviando a informacao
+            Serial.println("[SUCESSO]-Envio comando desligar/ligar bomba");
+          }else{
+            Serial.println("[ERROR]-Envio comando desligar/ligar bomba");
+          } 
+          radio.startListening();
+          
+          refinoNivelBaixoAnterior = dadosEnvio.refinoNivelBaixo;
+          
+          }
         break;
       }
       case 2:{
@@ -251,55 +269,6 @@ void loop() {
       //  Serial.print("Estado botao bomba ANTERIOR - ");
       //  Serial.println(estadoBotaoBombaAnt);
       
-        //Transformacao dos dados para exibicao no display
-        //Primeira tentativa
-        aux = nivelVazio / 10;
-        aux2 = nivelCheio + aux;
-        
-        
-        if( (dadosRecebidoRF.nivelLiquidoRF > nivelCheio && dadosRecebidoRF.nivelLiquidoRF > aux2) || (dadosRecebidoRF.nivelLiquidoRF <= nivelCheio && dadosRecebidoRF.nivelLiquidoRF < aux2) ){
-          nivelLiquido = "100";
-          }else if(dadosRecebidoRF.nivelLiquidoRF > nivelCheio && dadosRecebidoRF.nivelLiquidoRF > aux2){
-            nivelLiquido = "90";
-            }else if(dadosRecebidoRF.nivelLiquidoRF >= 8 && dadosRecebidoRF.nivelLiquidoRF <= 9){
-            nivelLiquido = "80";
-            }else if(dadosRecebidoRF.nivelLiquidoRF >= 10 && dadosRecebidoRF.nivelLiquidoRF <= 11){
-            nivelLiquido = "70";
-            }else if(dadosRecebidoRF.nivelLiquidoRF >= 12 && dadosRecebidoRF.nivelLiquidoRF <= 13){
-            nivelLiquido = "60";
-            }else if(dadosRecebidoRF.nivelLiquidoRF >= 14 && dadosRecebidoRF.nivelLiquidoRF <= 15){
-            nivelLiquido = "50";
-            }else if(dadosRecebidoRF.nivelLiquidoRF >= 16 && dadosRecebidoRF.nivelLiquidoRF <= 17){
-            nivelLiquido = "40";
-            }else if(dadosRecebidoRF.nivelLiquidoRF >= 18 && dadosRecebidoRF.nivelLiquidoRF <= 19){
-            nivelLiquido = "30";
-            }else if(dadosRecebidoRF
-            }else if(dadosRecebidoRF.nivelLiquidoRF >= 20){
-            nivelLiquido = "20";.nivelLiquidoRF >= 8 && dadosRecebidoRF.nivelLiquidoRF <= 9){
-            nivelLiquido = "10";
-
-        //Segunda tentativa
-        if(dadosRecebidoRF.nivelLiquidoRF = 10){
-          nivelLiquido = "100";
-          }else if(dadosRecebidoRF.nivelLiquidoRF = 12){
-            nivelLiquido = "90";
-            }else if(dadosRecebidoRF.nivelLiquidoRF = 14){
-            nivelLiquido = "80";
-            }else if(dadosRecebidoRF.nivelLiquidoRF 16){
-            nivelLiquido = "70";
-            }else if(dadosRecebidoRF.nivelLiquidoRF >= 12 && dadosRecebidoRF.nivelLiquidoRF <= 13){
-            nivelLiquido = "60";
-            }else if(dadosRecebidoRF.nivelLiquidoRF >= 14 && dadosRecebidoRF.nivelLiquidoRF <= 15){
-            nivelLiquido = "50";
-            }else if(dadosRecebidoRF.nivelLiquidoRF >= 16 && dadosRecebidoRF.nivelLiquidoRF <= 17){
-            nivelLiquido = "40";
-            }else if(dadosRecebidoRF.nivelLiquidoRF >= 18 && dadosRecebidoRF.nivelLiquidoRF <= 19){
-            nivelLiquido = "30";
-            }else if(dadosRecebidoRF
-            }else if(dadosRecebidoRF.nivelLiquidoRF >= 20){
-            nivelLiquido = "20";.nivelLiquidoRF >= 8 && dadosRecebidoRF.nivelLiquidoRF <= 9){
-            nivelLiquido = "10";
-          
         if(dadosRecebidoRF.bombaLigadaRF){
            estadoBombaDisplay = "ON";
           }else{

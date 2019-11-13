@@ -11,7 +11,7 @@ int nivelAguaAnterior = 0;
 int dadosRecebidos = 0;
 int alturaReservatorio = 40;//30cm
 int nivelCheio = 10;//10cm
-int nivelVazio = alturaReservatorio - 10;//10cm
+//int nivelVazio = 3000 //10cm
 int nivelLiquidoAgora = 0;
 int estado = 3;
 unsigned long tempoCorrido = 0;
@@ -21,6 +21,7 @@ byte enderecos[][7] = {"1Nody","2Nody"};
 struct estruturaDadosRF{
 
   int nivelLiquidoRF = 0;
+  int refinoNivelBaixo = 10
   boolean bombaLigadaRF = false;
   boolean dispositivoOperanteRF = false;
   boolean botaoBombaAcionadoRF = false;
@@ -116,7 +117,7 @@ void loop() {
         }else {
           //Lig a bomba caso tenha atingido o nivel vazio
           Serial.println("Entrei no modo AUTOMATICO");
-          if(nivelLiquidoAgora > nivelCheio){
+          if(nivelLiquidoAgora > dadosRecebidos.refinoNivelBaixo){
             dadosEnvioRF.bombaLigadaRF = true;
             digitalWrite(BOMBA_PIN, HIGH);
             }
