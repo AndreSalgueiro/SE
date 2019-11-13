@@ -21,7 +21,7 @@ byte enderecos[][7] = {"1Nody","2Nody"};
 struct estruturaDadosRF{
 
   int nivelLiquidoRF = 0;
-  int refinoNivelBaixo = 10
+  int refinoNivelBaixoRF = 10;
   boolean bombaLigadaRF = false;
   boolean dispositivoOperanteRF = false;
   boolean botaoBombaAcionadoRF = false;
@@ -117,7 +117,9 @@ void loop() {
         }else {
           //Lig a bomba caso tenha atingido o nivel vazio
           Serial.println("Entrei no modo AUTOMATICO");
-          if(nivelLiquidoAgora > dadosRecebidos.refinoNivelBaixo){
+          Serial.print("Potenciometro = ");
+          Serial.println(dadosRecebidoRF.refinoNivelBaixoRF);
+          if(nivelLiquidoAgora > dadosRecebidoRF.refinoNivelBaixoRF){
             dadosEnvioRF.bombaLigadaRF = true;
             digitalWrite(BOMBA_PIN, HIGH);
             }

@@ -20,7 +20,7 @@ int start = 0;
 int estado = 1;
 int estadoAnterior = 1000;
 int botaoControleManualAcionado = 1;
-int nivelLiquido = 0;
+//int nivelLiquido = 0;
 int alturaReservatorio = 30;//30cm
 int nivelCheio = 10;//10cm
 int nivelVazio = alturaReservatorio - nivelCheio;//10cm
@@ -29,6 +29,7 @@ int refinoNivelBaixoAnterior = 10;
 boolean controleManualAcionado = false;
 boolean estadoControleManualAlterado = false;
 char nivelLiquidoDisplay [5];
+char refinoNivelBaixoDisplay [5];
 const char *controleManualDisplay = "";
 const char *estadoBombaDisplay = ""; 
 
@@ -37,7 +38,7 @@ byte enderecos[][7] = {"1Nody","2Nody"};
 struct estruturaDadosRF{
 
   int nivelLiquidoRF = 0;
-  int refinoNivelBaixo = 10;
+  int refinoNivelBaixoRF = 10;
   boolean bombaLigadaRF = false;
   boolean dispositivoOperanteRF = false;
   boolean botaoBombaAcionadoRF = false;
@@ -166,7 +167,11 @@ void loop() {
       estadoBotaoSistema = digitalRead(BOTAO_SISTEMA_PIN);
       estadoBotaoBomba = digitalRead(BOTAO_BOMBA_PIN);
       botaoControleManualAcionado = digitalRead(BOTAO_CONTROLE_MANUAL_PIN);
-      dadosEnvio.refinoNivelBaixo = analogRead(POTENCIOMETRO_PIN);
+      dadosEnvioRF.refinoNivelBaixoRF = analogRead(POTENCIOMETRO_PIN);
+      //Alterando escala potenciometro
+      dadosEnvioRF.refinoNivelBaixoRF = map(dadosEnvioRF.refinoNivelBaixoRF,0,981,40,20);
+      Serial.print("Potenciometro = ");
+      Serial.println(dadosEnvioRF.refinoNivelBaixoRF);
       //lendo o potenciometro
       
       if(estadoBotaoSistema != estadoBotaoDesligaAnt){
@@ -208,7 +213,7 @@ void loop() {
         Serial.println(estadoControleManualAlterado);
         
         if(estadoControleManualAlterado){
-          digitalWrite(LED_PIN_5, HIGH);
+        //  digitalWrite(LED_PIN_5, HIGH);
           
           if(controleManualAcionado){
             
@@ -243,7 +248,7 @@ void loop() {
           if(controleManualAcionado == false){
               estadoControleManualAlterado = false;
             }
-        }else if(dadosEnvio.refinoNivelBaixo != refinoNivelBaixoAnterior){
+        }else if(dadosEnvioRF.refinoNivelBaixoRF != refinoNivelBaixoAnterior){
          
           //Se hove alteracao no potenciometro
           radio.stopListening();  
@@ -255,7 +260,7 @@ void loop() {
           } 
           radio.startListening();
           
-          refinoNivelBaixoAnterior = dadosEnvio.refinoNivelBaixo;
+          refinoNivelBaixoAnterior = dadosEnvioRF.refinoNivelBaixoRF;
           
           }
         break;
@@ -287,11 +292,13 @@ void loop() {
         Serial.println("///Dados Display////");
         Serial.println("////////////////");
         Serial.print("Nivel de liquido no reservatorio - ");
-        Serial.println(nivelLiquido);
+        Serial.println(dadosRecebidoRF.nivelLiquidoRF);
         Serial.print("Estato da bomba - ");
         Serial.println(dadosRecebidoRF.bombaLigadaRF);
         Serial.print("Controle manual ativado = ");
         Serial.println(controleManualAcionado);
+        Serial.print("Nivel Vazio = ");
+        Serial.println(dadosEnvioRF.refinoNivelBaixoRF);
         Serial.println("################");
 
         
@@ -328,8 +335,8 @@ void interrupcaoBotaoBomba(){
 
   void desenhar(){
 
-   u8g.drawFrame(0,0,127,31);            //desenha retângulo superior
-   u8g.drawFrame(0,33,127,31);           //desenha retângulo inferior
+   u8g.drawFrame(0,0,127,42);            //desenha retângulo superior
+   u8g.drawFrame(0,44,127,20);           //desenha retângulo inferior
 
    // converte float para strings char u8g
    u8g.drawStr(5, 13, "Manual");       //mostra temperatura
@@ -345,9 +352,16 @@ void interrupcaoBotaoBomba(){
    u8g.drawStr(74,26, estadoBombaDisplay);
   // u8g.drawStr(70,27, " C"); 
 
-   u8g.drawStr(39,45, "Nivel");             //mostra umidade
+   // converte float para strings char u8g
+   u8g.drawStr(5, 39, "Vazio");       //mostra temperatura
+   u8g.drawStr(60, 39, "-");
+   dtostrf(dadosEnvioRF.refinoNivelBaixoRF, 3, 1, refinoNivelBaixoDisplay);
+   u8g.drawStr(74,39, refinoNivelBaixoDisplay);
+
+   u8g.drawStr(5,58, "Nivel"); 
+   u8g.drawStr(60, 58, "-");//mostra umidade
    dtostrf(dadosRecebidoRF.nivelLiquidoRF, 3, 1, nivelLiquidoDisplay);
-   u8g.drawStr(47,60, nivelLiquidoDisplay);
+   u8g.drawStr(74,58, nivelLiquidoDisplay);
    //u8g.drawStr(75,60, "%");
    /*
    char nivelLiquidoDisplay = "";
