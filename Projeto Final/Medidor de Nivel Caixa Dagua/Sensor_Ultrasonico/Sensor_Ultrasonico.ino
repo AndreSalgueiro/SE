@@ -81,7 +81,16 @@ void loop() {
         Serial.println("Dispositivo de radio inoperante");
         dadosEnvioRF.dispositivoOperanteRF = false;
         }*/
-        
+      radio.startListening();
+      //Recebe dados do estado 1 
+      if(radio.available()){ //verifica se estou recebendo alguma informacao
+        radio.read(&dadosRecebidoRF, sizeof(tipoDadosRF)); //recebendo dado
+        Serial.println("[SUCESSO]-Recebido comando ligar/desligar bomba");
+        Serial.print("Ligar/Desligar bomba - ");
+        Serial.println(dadosRecebidoRF.bombaLigadaRF);
+        //dadosEnvioRF.bombaLigadaRF = dadosRecebidoRF.bombaLigadaRF;
+  
+      }  
       nivelLiquidoAgora = sonar.ping_cm();
       //Serial.println(nivelLiquidoAgora);  
       //if(nivelLiquidoAgora != nivelAguaAnterior){
@@ -103,6 +112,7 @@ void loop() {
                   //Desliga a bomba se o nivel maximo foi atingido
                   if(nivelLiquidoAgora <= nivelCheio){
                     dadosEnvioRF.bombaLigadaRF = false;
+                    dadosRecebidoRF.bombaLigadaRF = false;
                     digitalWrite(BOMBA_PIN, LOW); 
                    } 
                 }
@@ -117,7 +127,7 @@ void loop() {
         }else {
           //Lig a bomba caso tenha atingido o nivel vazio
           Serial.println("Entrei no modo AUTOMATICO");
-          Serial.print("Potenciometro = ");
+          Serial.print("Nivel Vazio = ");
           Serial.println(dadosRecebidoRF.refinoNivelBaixoRF);
           if(nivelLiquidoAgora > dadosRecebidoRF.refinoNivelBaixoRF){
             dadosEnvioRF.bombaLigadaRF = true;
@@ -149,17 +159,6 @@ void loop() {
        tempoCorrido = millis();
      // }
   
-      radio.startListening();
-      //Recebe dados do estado 1 
-      if(radio.available()){ //verifica se estou recebendo alguma informacao
-        radio.read(&dadosRecebidoRF, sizeof(tipoDadosRF)); //recebendo dado
-        Serial.println("[SUCESSO]-Recebido comando ligar/desligar bomba");
-        Serial.print("Ligar/Desligar bomba - ");
-        Serial.println(dadosRecebidoRF.bombaLigadaRF);
-        //dadosEnvioRF.bombaLigadaRF = dadosRecebidoRF.bombaLigadaRF;
-  
-      }
-      
       }
     }
   }

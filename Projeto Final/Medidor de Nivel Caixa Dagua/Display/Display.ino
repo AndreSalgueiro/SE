@@ -28,6 +28,7 @@ int botaoControleManualAcionadoAnterior = 1;
 int refinoNivelBaixoAnterior = 10;
 boolean controleManualAcionado = false;
 boolean estadoControleManualAlterado = false;
+boolean tentarReenvio = true;
 char nivelLiquidoDisplay [5];
 char refinoNivelBaixoDisplay [5];
 const char *controleManualDisplay = "";
@@ -236,6 +237,37 @@ void loop() {
             
           }
           //So envia dados para o medidor de nivel se houve acionamento do controle manual
+          /*radio.stopListening();  
+          //Envia dados ao Estado 3
+          if(radio.write(&dadosEnvioRF, sizeof(tipoDadosRF))){//enviando a informacao
+            Serial.println("[SUCESSO]-Envio comando desligar/ligar bomba");
+          }else{
+            Serial.println("[ERROR]-Envio comando desligar/ligar bomba");
+          } 
+          radio.startListening();*/
+
+          if(controleManualAcionado == false){
+              estadoControleManualAlterado = false;
+            }
+        }
+        if( (dadosEnvioRF.refinoNivelBaixoRF != refinoNivelBaixoAnterior) || (tentarReenvio == true) ){
+         
+          //Se hove alteracao no potenciometro
+          /*radio.stopListening();  
+          
+          if(radio.write(&dadosEnvioRF, sizeof(tipoDadosRF))){//enviando a informacao
+            Serial.println("[SUCESSO]-Envio comando desligar/ligar bomba");
+            tentarReenvio = false;
+          }else{
+            Serial.println("[ERROR]-Envio comando desligar/ligar bomba");
+            tentarReenvio = true;
+          } 
+          radio.startListening();*/
+          
+          refinoNivelBaixoAnterior = dadosEnvioRF.refinoNivelBaixoRF;
+          
+          }
+
           radio.stopListening();  
           //Envia dados ao Estado 3
           if(radio.write(&dadosEnvioRF, sizeof(tipoDadosRF))){//enviando a informacao
@@ -244,25 +276,6 @@ void loop() {
             Serial.println("[ERROR]-Envio comando desligar/ligar bomba");
           } 
           radio.startListening();
-
-          if(controleManualAcionado == false){
-              estadoControleManualAlterado = false;
-            }
-        }else if(dadosEnvioRF.refinoNivelBaixoRF != refinoNivelBaixoAnterior){
-         
-          //Se hove alteracao no potenciometro
-          radio.stopListening();  
-          
-          if(radio.write(&dadosEnvioRF, sizeof(tipoDadosRF))){//enviando a informacao
-            Serial.println("[SUCESSO]-Envio comando desligar/ligar bomba");
-          }else{
-            Serial.println("[ERROR]-Envio comando desligar/ligar bomba");
-          } 
-          radio.startListening();
-          
-          refinoNivelBaixoAnterior = dadosEnvioRF.refinoNivelBaixoRF;
-          
-          }
         break;
       }
       case 2:{
