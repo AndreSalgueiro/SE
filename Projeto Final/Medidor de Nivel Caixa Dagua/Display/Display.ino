@@ -26,9 +26,13 @@ int nivelCheio = 10;//10cm
 int nivelVazio = alturaReservatorio - nivelCheio;//10cm
 int botaoControleManualAcionadoAnterior = 1;
 int refinoNivelBaixoAnterior = 10;
+boolean refinoNivelBaixoAlterado = true;
+boolean bombaLigadaAlterado = false;
 boolean controleManualAcionado = false;
+boolean controleManualAlterado = false;
 boolean estadoControleManualAlterado = false;
 boolean tentarReenvio = true;
+
 char nivelLiquidoDisplay [5];
 char refinoNivelBaixoDisplay [5];
 const char *controleManualDisplay = "";
@@ -90,6 +94,7 @@ void estado_3(){
   }
 
 void interrupcaoBotaoBomba();
+void  desenhar();
 
 void setup() {
  
@@ -206,6 +211,7 @@ void loop() {
 
              dadosEnvioRF.controleManualAcionadoRF = controleManualAcionado;
              estadoControleManualAlterado = true;
+             controleManualAlterado = true;
           }
 
           botaoControleManualAcionadoAnterior = botaoControleManualAcionado;
@@ -222,6 +228,7 @@ void loop() {
             if(estadoBotaoBomba == HIGH && (estadoBotaoBomba != estadoBotaoBombaAnt) ){
               Serial.println("Acionei botao bomba");
               dadosEnvioRF.botaoBombaAcionadoRF = true;
+              bombaLigadaAlterado = true;
 
               //Se a bomba estava ligada entao desliga
               if(dadosRecebidoRF.bombaLigadaRF){
@@ -250,9 +257,10 @@ void loop() {
               estadoControleManualAlterado = false;
             }
         }
-        if( (dadosEnvioRF.refinoNivelBaixoRF != refinoNivelBaixoAnterior) || (tentarReenvio == true) ){
+        if( (dadosEnvioRF.refinoNivelBaixoRF != refinoNivelBaixoAnterior) ){
          
           //Se hove alteracao no potenciometro
+          refinoNivelBaixoAlterado = true;
           /*radio.stopListening();  
           
           if(radio.write(&dadosEnvioRF, sizeof(tipoDadosRF))){//enviando a informacao
@@ -267,15 +275,20 @@ void loop() {
           refinoNivelBaixoAnterior = dadosEnvioRF.refinoNivelBaixoRF;
           
           }
-
-          radio.stopListening();  
+          if(refinoNivelBaixoAlterado || bombaLigadaAlterado || controleManualAlterado){
+           radio.stopListening();  
           //Envia dados ao Estado 3
           if(radio.write(&dadosEnvioRF, sizeof(tipoDadosRF))){//enviando a informacao
-            Serial.println("[SUCESSO]-Envio comando desligar/ligar bomba");
+           Serial.println("[SUCESSO]- Envio envio dados sensor");
+           refinoNivelBaixoAlterado = false;
+           bombaLigadaAlterado = false;
+           controleManualAlterado = false;
           }else{
-            Serial.println("[ERROR]-Envio comando desligar/ligar bomba");
-          } 
+            Serial.println("[ERROR]- Envio envio dados sensor");
+          }   
           radio.startListening();
+            }
+         
         break;
       }
       case 2:{
