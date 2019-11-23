@@ -1,5 +1,6 @@
 #include <U8glib.h>
 #include <RF24.h>
+#include <stdlib.h>
 //#include <printf.h>
 
 //#define LED2_PIN 10
@@ -8,6 +9,7 @@
 #define BOTAO_BOMBA_PIN 2
 #define BOTAO_CONTROLE_MANUAL_PIN A0
 #define POTENCIOMETRO_PIN A1
+#define LIGA_DISPLAY 5
 //#define LED_PIN_5 5
 
 int i =0;
@@ -15,17 +17,17 @@ int estadoBotaoSistema = 0;
 int estadoBotaoBomba = 0;
 int estadoBotaoSistemaAnt = 1;
 int estadoBotaoBombaAnt = 1;
-int estadoBotaoDesligaAnt = 1;
+//int  = 1;
 int start = 0;
-int estado = 1;
+int estado = 0;
 int estadoAnterior = 1000;
 int botaoControleManualAcionado = 1;
 //int nivelLiquido = 0;
 int alturaReservatorio = 30;//30cm
-int nivelCheio = 10;//10cm
-int nivelVazio = alturaReservatorio - nivelCheio;//10cm
+int nivelCheio = 5;//5cm
+int nivelVazio = 0;//alturaReservatorio - nivelCheio;//10cm
 int botaoControleManualAcionadoAnterior = 1;
-int refinoNivelBaixoAnterior = 10;
+int refinoNivelBaixoAnterior = 1;
 boolean refinoNivelBaixoAlterado = true;
 boolean bombaLigadaAlterado = false;
 boolean controleManualAcionado = false;
@@ -35,6 +37,7 @@ boolean tentarReenvio = true;
 
 char nivelLiquidoDisplay [5];
 char refinoNivelBaixoDisplay [5];
+char nivelCheioDisplay [5];
 const char *controleManualDisplay = "";
 const char *estadoBombaDisplay = ""; 
 
@@ -43,8 +46,8 @@ byte enderecos[][7] = {"1Nody","2Nody"};
 struct estruturaDadosRF{
 
   int nivelLiquidoRF = 0;
-  int refinoNivelBaixoRF = 10;
-  boolean bombaLigadaRF = false;
+  int refinoNivelBaixoRF = 0;
+    boolean bombaLigadaRF = false;
   boolean dispositivoOperanteRF = false;
   boolean botaoBombaAcionadoRF = false;
   boolean controleManualAcionadoRF = false;
@@ -104,6 +107,9 @@ void setup() {
   pinMode(BOTAO_BOMBA_PIN,INPUT);
   pinMode(BOTAO_CONTROLE_MANUAL_PIN, INPUT);
   pinMode(POTENCIOMETRO_PIN, INPUT);
+  pinMode(LIGA_DISPLAY, OUTPUT);
+
+  digitalWrite(LIGA_DISPLAY, LOW);
   
  // digitalWrite(LED_PIN_5, LOW);
 
@@ -144,13 +150,22 @@ void loop() {
   switch(estado){
      case 0:{
       imprimeEstadoAtual(estado);
-      estadoBotaoSistema = digitalRead(BOTAO_SISTEMA_PIN);
       
-      if(estadoBotaoSistema != estadoBotaoSistemaAnt){
+      u8g.firstPage (); 
+      do {
+       } while (u8g.nextPage ());
+    
+      digitalWrite(LIGA_DISPLAY, LOW);
+      estadoBotaoSistema = digitalRead(BOTAO_SISTEMA_PIN);
+
+      if(estadoBotaoSistema == HIGH){
         estadoBotaoSistemaAnt = estadoBotaoSistema;
-        if(!estadoBotaoSistema == HIGH){
-          break;
-          }
+        }
+      if(estadoBotaoSistema == LOW && (estadoBotaoSistema != estadoBotaoSistemaAnt) ){
+        estadoBotaoSistemaAnt = estadoBotaoSistema;
+       // if(!estadoBotaoSistema == LOW){
+        //  break;
+        //  }
        // start = true;
         estado_1();
         break;
@@ -169,19 +184,25 @@ void loop() {
       Serial.println("Dispositivo de radio inoperante");
       dadosEnvioRF.dispositivoOperanteRF = false;
       }*/ 
-      
+      digitalWrite(LIGA_DISPLAY, HIGH);
       estadoBotaoSistema = digitalRead(BOTAO_SISTEMA_PIN);
+     //  = 1;
       estadoBotaoBomba = digitalRead(BOTAO_BOMBA_PIN);
       botaoControleManualAcionado = digitalRead(BOTAO_CONTROLE_MANUAL_PIN);
       dadosEnvioRF.refinoNivelBaixoRF = analogRead(POTENCIOMETRO_PIN);
       //Alterando escala potenciometro
-      dadosEnvioRF.refinoNivelBaixoRF = map(dadosEnvioRF.refinoNivelBaixoRF,0,981,40,20);
+      dadosEnvioRF.refinoNivelBaixoRF = map(dadosEnvioRF.refinoNivelBaixoRF,0,981,15,10);
       Serial.print("Potenciometro = ");
       Serial.println(dadosEnvioRF.refinoNivelBaixoRF);
       //lendo o potenciometro
-      
-      if(estadoBotaoSistema != estadoBotaoDesligaAnt){
+       
+      if(estadoBotaoSistema == HIGH){
+        estadoBotaoSistemaAnt = estadoBotaoSistema;
+        }
+      if(estadoBotaoSistema == LOW && (estadoBotaoSistema != estadoBotaoSistemaAnt) ){
+        Serial.println("Entrei desliga sistema");
         estado_0();
+        estadoBotaoSistemaAnt = estadoBotaoSistema;
         break;
         }
 
@@ -360,33 +381,42 @@ void interrupcaoBotaoBomba(){
   }
 
   void desenhar(){
-
-   u8g.drawFrame(0,0,127,42);            //desenha retângulo superior
-   u8g.drawFrame(0,44,127,20);           //desenha retângulo inferior
+  u8g.setFont(u8g_font_6x10); 
+  //u8g.setFont(u8g_font_5x7);
+  //u8g.setFont(u8g_font_9x15);
+   // u8g.setFont(u8g_font_unifont);
+   u8g.drawFrame(0,0,128,43);            //desenha retângulo superior
+   u8g.drawFrame(0,46,128,18);           //desenha retângulo inferior
 
    // converte float para strings char u8g
-   u8g.drawStr(5, 13, "Manual");       //mostra temperatura
-   u8g.drawStr(60, 13, "-");
-   //dtostrf(controleManualAcionadoDisplay, 3, 1, controleManualDisplay);
-   u8g.drawStr(74,13, controleManualDisplay);
+   u8g.drawStr(5, 10, "MANUAL");       //mostra temperatura
+   u8g.drawStr(55, 12, "-");
+   u8g.drawStr(74,10, controleManualDisplay);
   // u8g.drawStr(70,27, " C");
 
   // converte float para strings char u8g
-   u8g.drawStr(5, 26, "Bomba");       //mostra temperatura
-   u8g.drawStr(60, 26, "-");
-   //dtostrf(bombaLigadaDisplay, 3, 1, estadoBombaDisplay);
-   u8g.drawStr(74,26, estadoBombaDisplay);
+   u8g.drawStr(5, 20, "BOMBA");       //mostra temperatura
+   u8g.drawStr(55, 22, "-");
+   u8g.drawStr(74,20, estadoBombaDisplay);
   // u8g.drawStr(70,27, " C"); 
 
    // converte float para strings char u8g
-   u8g.drawStr(5, 39, "Vazio");       //mostra temperatura
-   u8g.drawStr(60, 39, "-");
-   dtostrf(dadosEnvioRF.refinoNivelBaixoRF, 3, 1, refinoNivelBaixoDisplay);
-   u8g.drawStr(74,39, refinoNivelBaixoDisplay);
+   u8g.drawStr(5, 30, "VAZIO");       //mostra temperatura
+   u8g.drawStr(55, 32, "-");
+   //dtostrf(dadosEnvioRF.refinoNivelBaixoRF, 3, 1, refinoNivelBaixoDisplay);//converte de float para char
+   itoa(dadosEnvioRF.refinoNivelBaixoRF, refinoNivelBaixoDisplay, 10);// converte inteiro para char
+   u8g.drawStr(74,30, refinoNivelBaixoDisplay); // exibe display
+   
+   u8g.drawStr(5,40, "CHEIO"); 
+   u8g.drawStr(55, 42, "-");//mostra umidade
+  // dtostrf(dadosRecebidoRF.nivelLiquidoRF, 3, 1, nivelLiquidoDisplay);
+   itoa(nivelCheio, nivelCheioDisplay, 10);// converte inteiro para char
+   u8g.drawStr(74,40, nivelCheioDisplay);
 
-   u8g.drawStr(5,58, "Nivel"); 
-   u8g.drawStr(60, 58, "-");//mostra umidade
-   dtostrf(dadosRecebidoRF.nivelLiquidoRF, 3, 1, nivelLiquidoDisplay);
+    u8g.drawStr(5,58, "NIVEL"); 
+   u8g.drawStr(55, 59, "-");//mostra umidade
+  // dtostrf(nivelCheio, 3, 1, nivelLiquidoDisplay);
+   itoa(dadosRecebidoRF.nivelLiquidoRF, nivelLiquidoDisplay, 10);// converte inteiro para char
    u8g.drawStr(74,58, nivelLiquidoDisplay);
    //u8g.drawStr(75,60, "%");
    /*
