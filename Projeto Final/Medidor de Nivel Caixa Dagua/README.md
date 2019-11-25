@@ -14,7 +14,7 @@ Componentes:
 - Jump Macho/Fêmea;
 - Display LCD Gráfico 128×64 Backlight Azul;
 - Botão tipo push-button
-- Potenciômetro Linear de 1K  
+- Potenciômetro Linear de 100K  
 
 O sistema contém dois conjuntos de dispositivos.
 
@@ -33,8 +33,9 @@ O segundo é composto por:
   - 3 Botões
   - Potenciômetro
   
- <p>Ao ligar o sistema precionando o botão, a informação do nível da água e estado da bomba (ligada/desligada) enviadas pelo primeiro conjunto, são tratados e exibidos no display, assim é possível acompanhar visualmente e em tempo real, o nível do reservatório e o acionamento da bomba.<br \>
-  A bomba é acionada de forma automática pelo dispositivo acoplado ao reservatório, mas por segurança, é possível ligar e desligar a mesma de forma manual, utilizando um segundo botão próximo ao display.
+ <p>Ao ligar o sistema precionando o botão, as informações enviadas pelo primeiro conjunto, são tratadas e exibidas no display, assim é possível acompanhar visualmente e em tempo real, o nível do reservatório, o status da bomba, o modo de operação do sistema e as configurações de nível alto/baixo do reservatório.<br \>
+  A bomba é ligada e desligada de forma automática pelo dispositivo acoplado ao reservatório, respeitando os níveis baixo e alto mas também é possível ligar e desligar a bomba de fomarma arbritária, bastando precionar o botão do modo manual, com este modo acionado, basta precionar o botão de liga/desliga da bomba.
+  Por questão de segurança, mesmo no modo manual, se a bomba for acionada e o nível do reservatório atingir o máximo, automaticamente a bomba é desligada, evitando desperdício caso o usuário tenha esquecido a bomba ligada no modo manual.
 
 
 ![MaqEstadoLogo](https://github.com/AndreSalgueiro/SE/blob/master/Projeto%20Final/Medidor%20de%20Nivel%20Caixa%20Dagua/Maquina_Estado.png)
