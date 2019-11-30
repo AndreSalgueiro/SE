@@ -38,8 +38,8 @@ O segundo é composto por:
   Por questão de segurança, mesmo no modo manual, se a bomba for acionada e o nível do reservatório atingir o máximo, automaticamente a bomba é desligada, evitando desperdício caso o usuário tenha esquecido a bomba ligada no modo manual.
 
 
-![MaqEstadoLogo](https://github.com/AndreSalgueiro/SE/blob/master/Projeto%20Final/Medidor%20de%20Nivel%20Caixa%20Dagua/Maquina_Estado.png)
+![MaqEstadoLogo](https://github.com/AndreSalgueiro/SE/blob/master/Projeto%20Final/Medidor%20de%20Nivel%20Caixa%20Dagua/Imagens/Maquina_Estado.png)
 
-![Display](https://github.com/AndreSalgueiro/SE/blob/master/Projeto%20Final/Medidor%20de%20Nivel%20Caixa%20Dagua/Representacao%20Grafica%20-%20Display_bb.png)
+![Display](https://github.com/AndreSalgueiro/SE/blob/master/Projeto%20Final/Medidor%20de%20Nivel%20Caixa%20Dagua/Imagens/Representacao%20Grafica%20-%20Display_bb.png)
 
-![SensorUltrasonico](https://github.com/AndreSalgueiro/SE/blob/master/Projeto%20Final/Medidor%20de%20Nivel%20Caixa%20Dagua/Representacao%20Grafica%20-%20Sensor%20Ultrasonico_bb.png)
+![SensorUltrasonico](https://github.com/AndreSalgueiro/SE/blob/master/Projeto%20Final/Medidor%20de%20Nivel%20Caixa%20Dagua/Imagens/Representacao%20Grafica%20-%20Sensor%20Ultrasonico_bb.png)
